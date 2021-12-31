@@ -78,8 +78,16 @@ String calcSha256(String text) {
 }
 
 class Util {
-  static String get(Map<String, dynamic> data, String key, {String defaultValue = ""}) {
+  static dynamic get(Map<String, dynamic> data, String key, {dynamic defaultValue}) {
     return data?.containsKey(key) == true ? data[key] : defaultValue;
+  }
+
+  static String getString(Map<String, dynamic> data, String key, {String defaultValue}) {
+    return get(data, key, defaultValue: defaultValue);
+  }
+
+  static int getInt(Map<String, dynamic> data, String key, {int defaultValue}) {
+    return get(data, key, defaultValue: defaultValue);
   }
 
   static String fazoGet(List<String> p, List<dynamic> data, String key) {
