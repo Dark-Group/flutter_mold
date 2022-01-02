@@ -79,7 +79,11 @@ String calcSha256(String text) {
 
 class Util {
   static dynamic get(Map<String, dynamic> data, String key, {dynamic defaultValue}) {
-    return data?.containsKey(key) == true ? data[key] : defaultValue;
+    final result = data?.containsKey(key) == true ? data[key] : defaultValue;
+    if (result == null) {
+      return defaultValue;
+    }
+    return result;
   }
 
   static String getString(Map<String, dynamic> data, String key, {String defaultValue}) {
