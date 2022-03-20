@@ -10,6 +10,7 @@ class GEditText extends MyWidget {
 
   final GEditTextBloc block = new GEditTextBloc();
   final bool enable;
+  final Color fillColor;
 
   GEditText({
     double width,
@@ -32,6 +33,7 @@ class GEditText extends MyWidget {
     Alignment alignment,
     int flex,
     this.enable = true,
+    this.fillColor,
   }) {
     this.block.width = width;
     this.block.height = height;
@@ -128,6 +130,8 @@ class GEditText extends MyWidget {
       prefixIcon: this.block.prefixIcon,
       suffixIcon: suffixIcon,
       enabled: this.enable,
+      fillColor: this.fillColor,
+      filled: this.fillColor!=null,
     );
   }
 }
