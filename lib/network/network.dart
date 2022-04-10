@@ -31,37 +31,37 @@ class Network {
 
   Network(this._dio);
 
-  static _NetworkBuilder post(String url, String uri) {
+  static _NetworkBuilder post(String url, String uri, {ResponseType responseType}) {
     final _url = url.endsWith("/") ? url : "$url/";
     final _uri = uri.startsWith("/") ? uri.substring(1) : uri;
-    return _NetworkBuilder(_url, _uri, "POST");
+    return _NetworkBuilder(_url, _uri, "POST", responseType);
   }
 
-  static _NetworkBuilder delete(String url, String uri) {
+  static _NetworkBuilder delete(String url, String uri, {ResponseType responseType}) {
     final _url = url.endsWith("/") ? url : "$url/";
     final _uri = uri.startsWith("/") ? uri.substring(1) : uri;
-    return _NetworkBuilder(_url, _uri, "DELETE");
+    return _NetworkBuilder(_url, _uri, "DELETE", responseType);
   }
 
-  static _NetworkBuilder get(String url, String uri) {
+  static _NetworkBuilder get(String url, String uri, {ResponseType responseType}) {
     final _url = url.endsWith("/") ? url : "$url/";
     final _uri = uri.startsWith("/") ? uri.substring(1) : uri;
-    return _NetworkBuilder(_url, _uri, "GET");
+    return _NetworkBuilder(_url, _uri, "GET", responseType);
   }
 
-  Future<String> _go(_NetworkBuilder builder) async {
-    final Response<String> _result = await _response(builder);
+  Future<T> _go<T>(_NetworkBuilder builder) async {
+    final Response<T> _result = await _response<T>(builder);
     return _result.data;
   }
 
-  Future<Response<T>> _response<T>(_NetworkBuilder builder) async {
+  Future<Response<T>> _response<T>(_NetworkBuilder builder) {
     String uniqueValue = builder.unique();
     Log.debug("======================\n$uniqueValue\n======================");
 
     dynamic data = {};
     if (builder._files.isNotEmpty) {
       final paramBody = builder._body is String ? builder._body : json.encode(builder._body ?? {});
-      data = FormData.fromMap({"param": paramBody, "files": builder._files});
+      data = FormData.fromMap({"body": paramBody, "files": builder._files});
     } else if (builder._body != null) {
       data = builder._body;
     }
@@ -71,6 +71,7 @@ class Network {
     return _dio.request("${builder.url}${builder.uri}",
         queryParameters: builder._param,
         options: Options(
+          responseType: builder.responseType,
           method: builder.method,
           headers: builder._header,
           sendTimeout: builder._connectionTimeout ?? (30 * 1000),
@@ -87,6 +88,7 @@ class _NetworkBuilder {
   final String url;
   final String uri;
   final String method;
+  final ResponseType responseType;
 
   int _connectionTimeout;
 
@@ -100,7 +102,7 @@ class _NetworkBuilder {
   ProgressCallback _onReceiveProgress;
   CancelToken _cancelToken;
 
-  _NetworkBuilder(this.url, this.uri, this.method);
+  _NetworkBuilder(this.url, this.uri, this.method, this.responseType);
 
   String unique() {
     if (_files.isEmpty) {
@@ -202,8 +204,8 @@ class _NetworkBuilder {
     return this;
   }
 
-  Future<String> go() async {
-    return Network._getInstance()._go(this);
+  Future<T> go<T>() {
+    return Network._getInstance()._go<T>(this);
   }
 
   Future<Response<T>> response<T>() {
