@@ -4,12 +4,13 @@ import 'package:flutter_mold/variable/error_result.dart';
 import 'package:flutter_mold/variable/text_value.dart';
 
 class ValueString extends ChangeNotifier implements TextValue {
-  final int size;
+  final int? size;
   String _oldValue = "";
   String _value = "";
   final bool _mandatory;
 
-  ValueString({@required this.size, String value = "", bool mandatory = false}) : this._mandatory = mandatory {
+  ValueString({@required this.size, String value = "", bool mandatory = false})
+      : this._mandatory = mandatory {
     this._value = nvlString(value);
   }
 
@@ -43,7 +44,7 @@ class ValueString extends ChangeNotifier implements TextValue {
 
   @override
   ErrorResult getError() {
-    if (this._value.length > size) {
+    if (size != null && this._value.length > size!) {
       final errorMessage = "ValueString: Text length must not exceed $size characters";
       return ErrorResult.makeWithString(errorMessage);
     }

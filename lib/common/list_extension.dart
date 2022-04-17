@@ -14,15 +14,15 @@ extension MyIterable<T, R> on Iterable<T> {
   }
 
   bool hasValueInstance(T value) {
-    return this.firstWhere((e) => e == value, orElse: () => null) != null;
+    return this.firstWhere((e) => e == value, orElse: () => null as T) != null;
   }
 
   T findWhere(bool Function(T element) predicate) {
-    return this.firstWhere((e) => predicate.call(e), orElse: () => null);
+    return this.firstWhere((e) => predicate.call(e), orElse: () => null as T);
   }
 
   bool containsWhere(bool Function(T element) predicate) {
-    return this.firstWhere((e) => predicate.call(e), orElse: () => null) != null;
+    return this.firstWhere((e) => predicate.call(e), orElse: () => null as T) != null;
   }
 
   Iterable<T> filterNotNull() {

@@ -3,13 +3,13 @@ import 'package:flutter_mold/variable/error_result.dart';
 import 'package:flutter_mold/variable/text_value.dart';
 
 class ValueBool extends ChangeNotifier implements TextValue {
-  bool _oldValue;
+  bool _oldValue = false;
   bool _value;
   final bool _mandatory;
 
-  ValueBool({bool value = false, bool mandatory = false}) : this._mandatory = mandatory {
-    this._value = value;
-  }
+  ValueBool({bool value = false, bool mandatory = false})
+      : this._value = value,
+        this._mandatory = mandatory;
 
   bool getValue() => this._value;
 

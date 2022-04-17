@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_mold/common/extensions.dart';
 import 'package:flutter_mold/common/list_extension.dart';
 import 'package:flutter_mold/localization/app_lang.dart';
 import 'package:flutter_mold/variable/error_result.dart';
@@ -18,27 +17,23 @@ class SpinnerOption extends Variable {
 
   final String code;
   final String name;
-  final Object tag;
+  final Object? tag;
 
-  SpinnerOption({@required this.code, @required this.name, this.tag}) {
-    if (code == null) {
-      throw Exception("SpinnerOption: code is null");
-    }
+  SpinnerOption({
+    required this.code,
+    required this.name,
+    this.tag,
+  });
 
-    if (name == null) {
-      throw Exception("SpinnerOption: name is null");
-    }
-  }
-
-  int getId() {
-    if (code == null || code.isEmpty || code == notSelected.code) {
+  int? getId() {
+    if (code.isEmpty || code == notSelected.code) {
       return null;
     }
     return int.parse(code);
   }
 
   @override
-  String toString() => this.name.toString();
+  String toString() => name.toString();
 
   @override
   ErrorResult getError() => ErrorResult.NONE;
@@ -54,13 +49,9 @@ class SpinnerOption extends Variable {
 }
 
 class ValueSpinner extends ChangeNotifier implements TextValue {
-  static void _checkValue(ValueSpinner spinner, [SpinnerOption option]) {
+  static void _checkValue(ValueSpinner spinner, [SpinnerOption? option]) {
     List<SpinnerOption> values = spinner._options;
     SpinnerOption value = option ?? spinner._value;
-
-    if (value == null) {
-      throw Exception("ValueSpinner: value is null");
-    }
 
     values.checkUniqueness((e) => e.code);
 
@@ -70,18 +61,17 @@ class ValueSpinner extends ChangeNotifier implements TextValue {
   }
 
   final List<SpinnerOption> _options;
-  SpinnerOption _oldValue;
+  SpinnerOption? _oldValue;
   SpinnerOption _value;
   final bool _mandatory;
 
-  ValueSpinner({@required List<SpinnerOption> values, SpinnerOption value, bool mandatory = false})
-      : this._options = values.map((e) => e).toList(),
-        this._mandatory = mandatory {
-    this._value = value;
-    if (this._value == null) {
-      this._value = values[0];
-    }
-
+  ValueSpinner({
+    required List<SpinnerOption> values,
+    SpinnerOption? value,
+    bool mandatory = false,
+  })  : _options = values.map((e) => e).toList(),
+        _mandatory = mandatory,
+        _value = value ?? values[0] {
     _checkValue(this);
   }
 
@@ -99,12 +89,12 @@ class ValueSpinner extends ChangeNotifier implements TextValue {
     if (options.isEmpty) throw Exception("ValueSpinner: isEmpty");
     this._options.clear();
     this._options.addAll(options.map((e) => e).toList());
-    setValue(options.firstWhereOrNull((e) => e.code == getValue()?.code) ?? options.first);
+    setValue(options.firstWhere((e) => e.code == getValue().code, orElse: () => options.first));
   }
 
   int getPosition() => this._options.indexOf(this._value);
 
-  bool isEmpty() => this._value == null || this._value.code.isEmpty;
+  bool isEmpty() => this._value.code.isEmpty;
 
   bool nonEmpty() => !isEmpty();
 

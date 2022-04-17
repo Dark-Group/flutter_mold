@@ -4,17 +4,16 @@ import 'package:flutter_mold/variable/variable.dart';
 import 'package:flutter_mold/variable/variable_util.dart';
 
 class ValueArray<E extends Variable> extends ChangeNotifier implements Variable {
-  final List<E> _items;
-  bool _changed;
+  final List<E> _items = <E>[];
+  bool _changed = false;
 
-  ValueArray({List<E> items}) : this._items = <E>[] {
-    if (items != null && items.isNotEmpty) {
-      this._items.addAll(items);
+  ValueArray({List<E>? items}) {
+    if (items?.isNotEmpty == true) {
+      this._items.addAll(items!);
     }
-    this._changed = false;
   }
 
-  List<E> getItems() => this._items?.map((e) => e)?.toList() ?? [];
+  List<E> getItems() => this._items.map((e) => e).toList();
 
   void prepend(E item) {
     this._items.insert(0, item);

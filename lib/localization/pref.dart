@@ -11,13 +11,13 @@ class LocalizationPref {
 
   //------------------------------------------------------------------------------------------------
 
-  static Future<String> getLanguage() {
+  static Future<String?> getLanguage() {
     return Pref.load(MODULE, APP_LANGUAGE);
   }
 
   static Future<bool> setLanguage(String langCode) {
-    if (langCode == null || langCode.trim().isEmpty) {
-      throw new Exception("lang code is null or empty LangCode[$langCode]");
+    if (langCode.trim().isEmpty) {
+      throw new Exception("lang code is empty LangCode[$langCode]");
     }
     return Pref.save(MODULE, APP_LANGUAGE, langCode);
   }

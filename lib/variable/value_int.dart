@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_mold/log/logger.dart';
+import 'package:flutter_mold/common/logger.dart';
 import 'package:flutter_mold/variable/error_result.dart';
 import 'package:flutter_mold/variable/text_value.dart';
 import 'package:flutter_mold/variable/value_string.dart';
@@ -8,7 +8,7 @@ class ValueInt extends ChangeNotifier implements TextValue {
   final ValueString _value;
   final bool _mandatory;
 
-  ValueInt({@required int size, String text, int number, bool mandatory = false}) //
+  ValueInt({@required int? size, String? text, int? number, bool mandatory = false}) //
       : this._value = ValueString(size: size, mandatory: false),
         this._mandatory = mandatory {
     if (text != null) {
@@ -20,26 +20,25 @@ class ValueInt extends ChangeNotifier implements TextValue {
     }
   }
 
-  int getValue() {
+  int? getValue() {
     String r = this._value.getValue();
-    if (r == null || r.isEmpty) {
+    if (r.isEmpty) {
       return null;
     }
     return int.tryParse(r);
   }
 
   bool isZero() {
-    int number = getValue();
-    return number == 0;
+    return getValue() == 0;
   }
 
   bool isZeroOrNull() {
     return getValue() == null || isZero();
   }
 
-  void setValue(int newValue) {
+  void setValue(int? newValue) {
     if (newValue == null) {
-      this._value.setValue(null);
+      this._value.setValue("");
     } else {
       this._value.setValue(newValue.toString());
     }
@@ -79,10 +78,10 @@ class ValueInt extends ChangeNotifier implements TextValue {
 
     try {
       String q = this._value.getValue();
-      if (q != null && q.isNotEmpty) {
+      if (q.isNotEmpty) {
         int.parse(q);
       }
-    } catch (ex, st) {
+    } on Exception catch (ex, st) {
       Log.error(ex, st);
       return ErrorResult.makeWithException(ex);
     }

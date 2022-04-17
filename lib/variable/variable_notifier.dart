@@ -3,26 +3,26 @@ import 'package:flutter_mold/variable/error_result.dart';
 import 'package:flutter_mold/variable/variable.dart';
 
 class VariableNotifier<V extends Variable> extends ChangeNotifier implements Variable {
-  Variable _value;
+  Variable? _value;
 
-  VariableNotifier({V value}) : this._value = value;
+  VariableNotifier({V? value}) : _value = value;
 
-  void setValue(V value) {
-    this._value = value;
+  void setValue(V? value) {
+    _value = value;
     super.notifyListeners();
   }
 
-  V getValue() => this._value;
+  V? getValue() => _value as V;
 
   @override
-  ErrorResult getError() => this._value.getError();
+  ErrorResult getError() => _value?.getError() ?? ErrorResult.NONE;
 
   @override
-  bool mandatory() => this._value.mandatory();
+  bool mandatory() => _value?.mandatory() ?? false;
 
   @override
-  bool modified() => this._value.modified();
+  bool modified() => _value?.modified() ?? false;
 
   @override
-  void readyToChange() => this._value.readyToChange();
+  void readyToChange() => _value?.readyToChange();
 }

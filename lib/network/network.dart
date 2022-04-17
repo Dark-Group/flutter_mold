@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_mold/log/logger.dart';
+import 'package:flutter_mold/common/logger.dart';
 
 class Network {
-  static Network _instance;
+  static Network? _instance;
 
   static Network _getInstance() {
     if (_instance == null) {
@@ -17,14 +17,15 @@ class Network {
         dio.interceptors.add(LogInterceptor(responseBody: true, requestBody: true));
       }
       if (!kIsWeb) {
-        (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
+        (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+            (HttpClient client) {
           client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
           return client;
         };
       }
       _instance = Network(dio);
     }
-    return _instance;
+    return _instance!;
   }
 
   final Dio _dio;
@@ -49,7 +50,7 @@ class Network {
     return _NetworkBuilder(_url, _uri, "GET");
   }
 
-  Future<String> _go(_NetworkBuilder builder) async {
+  Future<String?> _go(_NetworkBuilder builder) async {
     final Response<String> _result = await _response(builder);
     return _result.data;
   }
@@ -88,7 +89,7 @@ class _NetworkBuilder {
   final String uri;
   final String method;
 
-  int _connectionTimeout;
+  int? _connectionTimeout;
 
   final Map<String, String> _param = {};
   final Map<String, String> _header = {};
@@ -96,9 +97,9 @@ class _NetworkBuilder {
 
   dynamic _body;
 
-  ProgressCallback _onSendProgress;
-  ProgressCallback _onReceiveProgress;
-  CancelToken _cancelToken;
+  ProgressCallback? _onSendProgress;
+  ProgressCallback? _onReceiveProgress;
+  CancelToken? _cancelToken;
 
   _NetworkBuilder(this.url, this.uri, this.method);
 
@@ -106,9 +107,13 @@ class _NetworkBuilder {
     if (_files.isEmpty) {
       String value = "$url$uri";
 
-      final params = (_param.keys.toList()..sort((l, r) => l.compareTo(r))).map((k) => "$k-${_param[k]}").join(",");
+      final params = (_param.keys.toList()..sort((l, r) => l.compareTo(r)))
+          .map((k) => "$k-${_param[k]}")
+          .join(",");
 
-      final headers = (_header.keys.toList()..sort((l, r) => l.compareTo(r))).map((k) => "$k-${_header[k]}").join(",");
+      final headers = (_header.keys.toList()..sort((l, r) => l.compareTo(r)))
+          .map((k) => "$k-${_header[k]}")
+          .join(",");
 
       String bodyValue = _body is String ? _body : json.encode(_body);
       return ([value, params, headers, bodyValue]..removeWhere((e) => e.isEmpty)).join(",").trim();
@@ -146,7 +151,7 @@ class _NetworkBuilder {
 
     if (body is Map) {
       final _data = <String, dynamic>{};
-      _data.addAll(body);
+      _data.addAll(body as Map<String, dynamic>);
       _data.removeWhere((key, value) => value == null);
       _body = _data;
     } else if (body is List) {
@@ -202,7 +207,7 @@ class _NetworkBuilder {
     return this;
   }
 
-  Future<String> go() async {
+  Future<String?> go() async {
     return Network._getInstance()._go(this);
   }
 

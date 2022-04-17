@@ -16,6 +16,6 @@ class VariableUtil {
   }
 
   static ErrorResult getError(List<Variable> items) {
-    return items.filterNotNull().map((e) => e.getError()).findWhere((e) => e.isError()) ?? ErrorResult.NONE;
+    return items.filterNotNull().map((e) => e.getError()).findWhere((e) => e.isError());
   }
 }

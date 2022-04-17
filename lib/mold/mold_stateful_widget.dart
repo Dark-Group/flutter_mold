@@ -7,9 +7,9 @@ enum WidgetState {
 }
 
 abstract class MoldStatefulWidget extends StatefulWidget {
-  BuildContext _context;
-  WidgetState state;
-  VoidCallback _setState;
+  BuildContext? _context;
+  WidgetState? state;
+  VoidCallback? _setState;
 
   @override
   _MoldStatefulWidgetState createState() => _MoldStatefulWidgetState();
@@ -18,7 +18,7 @@ abstract class MoldStatefulWidget extends StatefulWidget {
     _context = context;
   }
 
-  BuildContext getContext() => _context;
+  BuildContext? getContext() => _context;
 
   void onCreate() {}
 
@@ -37,7 +37,7 @@ class _MoldStatefulWidgetState extends State<MoldStatefulWidget> with WidgetsBin
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance?.addObserver(this);
 
     /// set widget state init
     widget.state = WidgetState.INIT;
@@ -50,7 +50,7 @@ class _MoldStatefulWidgetState extends State<MoldStatefulWidget> with WidgetsBin
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance?.removeObserver(this);
 
     widget.onDestroy();
     super.dispose();

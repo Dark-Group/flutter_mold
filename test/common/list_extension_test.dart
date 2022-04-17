@@ -1,11 +1,11 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_mold/common/list_extension.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group("test checkUniqueness function", () {
-    test("check with null onMap function", () {
-      expect(() => [1, 2, 3, 5].checkUniqueness(null), throwsA(isA()));
-    });
+    // test("check with null onMap function", () {
+    //   expect(() => [1, 2, 3, 5].checkUniqueness(null), throwsA(isA()));
+    // });
 
     test("check with empty list", () {
       [].checkUniqueness((element) => element.toString());
@@ -25,9 +25,9 @@ void main() {
       expect([].hasValueInstance(null), isFalse);
     });
 
-    test("search null object inside list", () {
-      expect([1, 32, 546].hasValueInstance(null), isFalse);
-    });
+    // test("search null object inside list", () {
+    //   expect([1, 32, 546].hasValueInstance(null), isFalse);
+    // });
 
     test("search null object inside contain null objects list ", () {
       expect([1, null, 546, null].hasValueInstance(null), isFalse);
@@ -38,9 +38,9 @@ void main() {
   });
 
   group("test findWhere function", () {
-    test("check with null predicate function", () {
-      expect(() => [1, 2, 3, 5].findWhere(null), throwsA(isA()));
-    });
+    // test("check with null predicate function", () {
+    //   expect(() => [1, 2, 3, 5].findWhere(null), throwsA(isA()));
+    // });
 
     test("check with empty list", () {
       expect([].findWhere((element) => true), isNull);
@@ -56,16 +56,16 @@ void main() {
   });
 
   group("test containsWhere function", () {
-    test("check with null predicate function", () {
-      expect(() => [1, 2, 3, 5].containsWhere(null), throwsA(isA()));
-    });
+    // test("check with null predicate function", () {
+    //   expect(() => [1, 2, 3, 5].containsWhere(null), throwsA(isA()));
+    // });
 
     test("check with empty list", () {
       expect([].containsWhere((e) => true), isFalse);
     });
 
     test("search null object inside list", () {
-      expect([1, 32, 546].containsWhere((e) => e == null), isFalse);
+      expect(<int?>[1, 32, 546].containsWhere((e) => e == null), isFalse);
     });
 
     test("search null object inside contain null objects list ", () {
@@ -92,16 +92,16 @@ void main() {
   });
 
   group("test filterWhere function", () {
-    test("check with null predicate function", () {
-      expect(() => [1, 2, 3, 5].filterWhere(null), throwsA(isA()));
-    });
+    // test("check with null predicate function", () {
+    //   expect(() => [1, 2, 3, 5].filterWhere(null), throwsA(isA()));
+    // });
 
     test("check with empty list", () {
       expect([].filterWhere((e) => true), isEmpty);
     });
 
     test("search null object inside list", () {
-      expect([1, 32, 546].filterWhere((e) => e == null), isEmpty);
+      expect(<int?>[1, 32, 546].filterWhere((e) => e == null), isEmpty);
     });
 
     test("search null object inside contain null objects list ", () {

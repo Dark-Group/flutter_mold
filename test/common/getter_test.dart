@@ -2,13 +2,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_mold/common/getter.dart';
 
 void main() {
-  test("test with null function", () {
-    Getter<String> testGetter = Getter(null);
-    expect(() => testGetter.get(), throwsA(isA()));
-  });
+  // test("test with null function", () {
+  //   Getter<String> testGetter = Getter(null);
+  //   expect(() => testGetter.get(), throwsA(isA()));
+  // });
 
   test("test with null object", () {
-    Getter<String> testGetter = Getter(() => null);
+    Getter<String?> testGetter = Getter(() => null);
     expect(testGetter.get(), isNull);
   });
 

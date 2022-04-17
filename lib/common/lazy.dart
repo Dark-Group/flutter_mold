@@ -1,17 +1,17 @@
-import 'package:flutter_mold/log/logger.dart';
+import 'package:flutter_mold/common/logger.dart';
 
 typedef LazyLoad<T> = T Function();
 
 class Lazy<T> {
-  T _data;
+  T? _data;
   bool _isLoaded;
-  final LazyLoad<T> _onLoadLazy;
+  final LazyLoad<T>? _onLoadLazy;
 
-  Lazy(LazyLoad<T> onLoadLazy)
+  Lazy(LazyLoad<T>? onLoadLazy)
       : _onLoadLazy = onLoadLazy,
         _isLoaded = false;
 
-  T _load() {
+  T? _load() {
     try {
       this._data = this._onLoadLazy?.call();
       return this._data;
@@ -24,7 +24,7 @@ class Lazy<T> {
     }
   }
 
-  T get() {
+  T? get() {
     if (this._isLoaded) {
       return this._data;
     }

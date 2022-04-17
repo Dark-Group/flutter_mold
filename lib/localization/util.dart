@@ -1,33 +1,34 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_mold/common/logger.dart';
 import 'package:flutter_mold/common/tuple.dart';
 import 'package:flutter_mold/localization/app_lang.dart';
-import 'package:flutter_mold/log/logger.dart';
 
 class AppLangUtil {
   static Future<Tuple<String, Map<String, String>>> loadSupportLang() async {
-    final filePath = 'assets/l10n/support_langs.json';
-    final jsonString = await rootBundle.loadString(filePath).catchError((e, st) {
+    try {
+      final filePath = 'assets/l10n/support_langs.json';
+      final jsonString = await rootBundle.loadString(filePath);
+
+      if (jsonString.trim().isEmpty) {
+        throw Exception("Support languages json file is empty ");
+      }
+
+      Map<String, dynamic> data = json.decode(jsonString);
+      final defaultLangCode = data["default"];
+      data.remove("default");
+
+      Map<String, String> languages = data.map((key, value) => MapEntry(
+            key.toLowerCase().split("_").first.trim(),
+            value.toString().trim(),
+          ));
+      languages.removeWhere((key, value) => value.isEmpty);
+      return new Tuple(defaultLangCode, languages);
+    } catch (e, st) {
       Log.error(e, st);
-      return "";
-    });
-
-    if (jsonString == null || jsonString.trim().isEmpty) {
-      throw Exception("$filePath not found");
     }
-
-    Map<String, dynamic> data = json.decode(jsonString);
-    final defaultLangCode = data["default"];
-    data.remove("default");
-
-    Map<String, String> languages = data.map((key, value) => MapEntry(
-          key.toLowerCase().split("_").first.trim(),
-          value.toString().trim(),
-        ));
-    languages.removeWhere((key, value) => value.isEmpty);
-
-    return new Tuple(defaultLangCode, languages);
+    return new Tuple("ru", <String, String>{"ru": "Ru"});
   }
 
   static Future<Map<String, String>> loadLocalizations() async {

@@ -1,27 +1,27 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_mold/log/logger.dart';
+import 'package:flutter_mold/common/logger.dart';
 import 'package:flutter_mold/variable/error_result.dart';
 import 'package:flutter_mold/variable/quantity.dart';
 import 'package:flutter_mold/variable/text_value.dart';
 import 'package:flutter_mold/variable/value_string.dart';
 
 class ValueDecimal extends ChangeNotifier implements TextValue, Quantity {
-  final int precision;
-  final int scale;
+  final int? precision;
+  final int? scale;
   final ValueString _value;
   final bool _mandatory;
 
-  Decimal _cache;
+  Decimal? _cache;
 
   ValueDecimal({@required this.precision, @required this.scale, bool mandatory = false})
       : this._value = new ValueString(size: 200, mandatory: false),
         this._mandatory = mandatory;
 
-  Decimal getValue() {
+  Decimal? getValue() {
     if (this._cache == null) {
       String s = this._value.getValue();
-      if (s != null && s.isNotEmpty) {
+      if (s.isNotEmpty) {
         try {
           this._cache = new Decimal.parse(s);
         } catch (e, st) {
@@ -32,7 +32,7 @@ class ValueDecimal extends ChangeNotifier implements TextValue, Quantity {
     return this._cache;
   }
 
-  void setValue(Decimal newValue) {
+  void setValue(Decimal? newValue) {
     this._cache = null;
     String v = "";
     if (newValue != null) {
@@ -50,7 +50,7 @@ class ValueDecimal extends ChangeNotifier implements TextValue, Quantity {
     if (isEmpty()) {
       return true;
     }
-    Decimal v = getValue();
+    Decimal? v = getValue();
     return v == null || v.compareTo(Decimal.zero) == 0;
   }
 
@@ -80,14 +80,16 @@ class ValueDecimal extends ChangeNotifier implements TextValue, Quantity {
 
   @override
   ErrorResult getError() {
-    Decimal v = getValue();
+    Decimal? v = getValue();
 
     if (this._value.nonEmpty() && v == null) {
       String errorMessage = "ValueDecimal: The field must contain only numeric";
       return ErrorResult.makeWithString(errorMessage);
     }
 
-    if (v != null && (v.precision > this.precision || v.scale > this.scale)) {
+    if (v != null &&
+        ((this.precision != null && v.precision > this.precision!) ||
+            (this.scale != null && v.scale > this.scale!))) {
       String errorMessage = "ValueDecimal: Incorrect format $precision,$scale";
       return ErrorResult.makeWithString(errorMessage);
     }

@@ -1,60 +1,57 @@
-import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_mold/flutter_mold.dart';
 
 void main() {
-  runApp(const MyApp());
+  MoldApplication app = MyApp();
+  Mold.startApplication(app);
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
-
+class MyApp extends MoldApplication {
   @override
-  State<MyApp> createState() => _MyAppState();
+  Map<String, WidgetBuilder> getRoutes() {
+    return {
+      "/": (_) => Window(IntroScreen()),
+      SecondScreen.routeName: (_) => Window(SecondScreen()),
+    };
+  }
 }
 
-class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-
+class IntroScreen extends Screen {
   @override
-  void initState() {
-    super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion = 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
+  Widget onCreateWidget(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          Text("Hello"),
+          TextButton(
+            onPressed: () {
+              SecondScreen.open(getRequiredContext(), Random.secure().nextInt(100));
+            },
+            child: Text("Next"),
+          )
+        ],
       ),
+    );
+  }
+}
+
+class SecondScreen extends Screen {
+  static const String routeName = "/second";
+
+  static void open(BuildContext context, int personId) {
+    print('person_id: $personId');
+    final bundle = Bundle.newBundle(context, {"person_id": personId});
+    Mold.openContent(context, routeName, bundle: bundle);
+  }
+
+  int get personId => bundle?.getInt("person_id") ?? -1;
+
+  @override
+  Widget onCreateWidget(BuildContext context) {
+    return Scaffold(
+      body: Text("Second Screen with argument\nPersonId : $personId"),
     );
   }
 }

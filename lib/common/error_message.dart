@@ -18,7 +18,7 @@ class ErrorMessage {
   static final String OAUTH_NUMERIC_OR_VALUE = "numeric or value".toLowerCase();
   static final String OAUTH_NO_DATA_FOUND = "no data found".toLowerCase();
 
-  static String getMessage(String error, {bool isOauth = false}) {
+  static String? getMessage(String? error, {bool isOauth = false}) {
     if (error == null) return null;
     String err = error.toLowerCase();
     if (err.contains(CONNECTION_FAIL)) {
@@ -29,7 +29,8 @@ class ErrorMessage {
       return t("error_http_not_found");
     } else if (err.contains(CONNECTION_TIMEOUT)) {
       return t("error_connection_timeout");
-    } else if (isOauth && (err.contains(OAUTH_NUMERIC_OR_VALUE) || err.contains(OAUTH_NO_DATA_FOUND))) {
+    } else if (isOauth &&
+        (err.contains(OAUTH_NUMERIC_OR_VALUE) || err.contains(OAUTH_NO_DATA_FOUND))) {
       return t("error_incorrect_login_or_password");
     } else if (err.contains(NO_DATA_FOUND)) {
       return t("error_no_data_found");
@@ -39,29 +40,32 @@ class ErrorMessage {
     return err;
   }
 
-  final String messageText;
-  final String stacktrace;
-  final String httpCode;
+  final String? messageText;
+  final String? stacktrace;
+  final String? httpCode;
 
-  ErrorMessage(String message, {String stacktrace, String httpCode})
-      : this.messageText = nvl(getMessage(message, isOauth: httpCode == "401")),
-        this.stacktrace = nvl(stacktrace),
-        this.httpCode = nvl(httpCode);
+  ErrorMessage(String? message, {String? stacktrace, String? httpCode})
+      : this.messageText = nvl(
+          getMessage(message, isOauth: httpCode == "401"),
+          "unknown error message:$message",
+        ),
+        this.stacktrace = nvl(stacktrace, ""),
+        this.httpCode = nvl(httpCode, "");
 
   factory ErrorMessage.parse(dynamic error) {
     return ErrorMessage.parseWithStacktrace(error, "");
   }
 
   factory ErrorMessage.parseWithStacktrace(dynamic error, dynamic stacktrace) {
-    String message = error.toString();
+    String message = error?.toString() ?? "unknown error data";
     String httpCode = "-1";
     if (error is DioError) {
       if (error.type == DioErrorType.response) {
-        message = error.response.data.toString();
-        if (message.trim().isEmpty) {
+        message = error.response?.data?.toString() ?? "";
+        if (message.isEmpty) {
           message = error.message;
         }
-        httpCode = error.response.statusCode.toString();
+        httpCode = error.response?.statusCode?.toString() ?? "";
       }
     }
     return ErrorMessage(message.trim(), stacktrace: stacktrace.toString(), httpCode: httpCode);
@@ -71,8 +75,8 @@ class ErrorMessage {
 
   @override
   String toString() {
-    if (stacktrace == null || stacktrace.trim().isEmpty) {
-      return messageText;
+    if (stacktrace?.trim().isNotEmpty != true) {
+      return messageText ?? "unknown error data";
     }
     return "$messageText\n$stacktrace";
   }

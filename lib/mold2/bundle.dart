@@ -1,15 +1,11 @@
 import 'package:flutter/widgets.dart';
 
 class Bundle {
-  static Bundle newBundle(BuildContext context, [Map<String, dynamic> arguments]) {
-    dynamic argument = ModalRoute.of(context).settings.arguments;
-    Bundle lastBundle;
+  static Bundle newBundle(BuildContext context, [Map<String, dynamic>? arguments]) {
+    Object? argument = ModalRoute.of(context)?.settings.arguments;
+    Bundle? lastBundle;
     if (argument.runtimeType == Bundle) {
       lastBundle = argument as Bundle;
-    }
-
-    if (lastBundle != null) {
-      print(lastBundle._bundle);
     }
 
     final bundle = new Bundle._(lastBundle);
@@ -19,10 +15,10 @@ class Bundle {
     return bundle;
   }
 
-  final Bundle _lastBundle;
+  final Bundle? _lastBundle;
   final Map<String, dynamic> _bundle;
 
-  Bundle._(Bundle lastBundle)
+  Bundle._(Bundle? lastBundle)
       : this._lastBundle = lastBundle,
         this._bundle = <String, dynamic>{};
 
@@ -44,7 +40,7 @@ class Bundle {
     return this._lastBundle?.get(key) ?? null;
   }
 
-  String getString(String key) => get(key)?.toString();
+  String? getString(String key) => get(key)?.toString();
 
   R getObject<R>(String key) => (get(key) as R);
 

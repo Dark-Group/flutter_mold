@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 typedef BuildWidget = Widget Function(BuildContext context);
 
 abstract class MoldApplication {
-  MoldApplicationWidget _applicationWidget;
+  MoldApplicationWidget? _applicationWidget;
 
   void _onInit(MoldApplicationWidget applicationWidget) {
     this._applicationWidget = applicationWidget;
@@ -16,7 +16,7 @@ abstract class MoldApplication {
 
   bool isInit() => _applicationWidget != null;
 
-  BuildContext get applicationContext => isInit() ? _applicationWidget.getContext() : null;
+  BuildContext? get applicationContext => _applicationWidget?.getContext();
 
   void onCreate() {
     assert(isInit());
@@ -24,43 +24,71 @@ abstract class MoldApplication {
 
   void onDestroy() {}
 
-  Future<MoldColor> getColor() {
-    return Future<MoldColor>.value(null);
+  Future<MoldColor?> getColor() {
+    return Future<MoldColor?>.value(null);
   }
 
-  Future<MoldTheme> getTheme() {
-    return Future<MoldTheme>.value(null);
+  Future<MoldTheme?> getTheme() {
+    return Future<MoldTheme?>.value(null);
   }
 
   Map<String, WidgetBuilder> getRoutes();
 
   Map<String, String> getTranslates(String langCode) {
+    if (langCode == "en") {
+      return <String, String>{
+        "gwslib:date_util:hour %1s": "%1s h",
+        "gwslib:date_util:minute %1s": "%1s min",
+        "gwslib:date_util:hour_minute %1s %2s": "%1s h %2s min",
+        "gwslib:error:error_conection_fail": "No internet connection (connection fail)",
+        "gwslib:error:error_conection_refused": "No internet connection (connection refused)",
+        "gwslib:error:error_failed_host": "No internet connection (failed host lookup)",
+        "gwslib:error:error_http_not_found": "No internet connection (http not found)",
+        "gwslib:error:error_socket_exception": "No internet connection (socket exception)",
+        "gwslib:error:error_connection_timeout":
+            "Internet speed is slow or no connection  (connection timeout)",
+        "gwslib:error:error_incorrect_login_or_password": "Wrong login or password",
+        "gwslib:spinner_option:not_selected": "Not selected",
+        "gwslib:map:location_request_denied_title": "Location request was denied",
+        "gwslib:map:location_request_denied_description":
+            "In order to use some of the functions of the application, open the settings of your application and allow access to the location",
+        "gwslib:map:go_to_setting": "Go to Setting",
+      };
+    }
     return <String, String>{
-      "gwslib:date_util:hour": "%1s ч",
-      "gwslib:date_util:minute": "%1s мин",
-      "gwslib:date_util:hour_minute": "%1s ч %2s мин",
+      "gwslib:date_util:hour %1s": "%1s ч",
+      "gwslib:date_util:minute %1s": "%1s мин",
+      "gwslib:date_util:hour_minute %1s %2s": "%1s ч %2s мин",
       "gwslib:error:error_conection_fail": "Нет соединения с интернетом (connection fail)",
       "gwslib:error:error_conection_refused": "Нет соединения с интернетом (connection refused)",
+      "gwslib:error:error_failed_host": "Нет соединения с интернетом (failed host lookup)",
       "gwslib:error:error_http_not_found": "Нет соединения с интернетом (http not found)",
-      "gwslib:error:error_connection_timeout": "Скорость интернета низкая или нет подключения (connection timeout)",
+      "gwslib:error:error_socket_exception": "Нет соединения с интернетом (socket exception)",
+      "gwslib:error:error_connection_timeout":
+          "Скорость интернета низкая или нет подключения (connection timeout)",
       "gwslib:error:error_incorrect_login_or_password": "Неверный логин или пароль ",
       "gwslib:spinner_option:not_selected": "Не выбран",
+      "gwslib:map:location_request_denied_title":
+          "Запрос на определение местоположения был отклонен",
+      "gwslib:map:location_request_denied_description":
+          "Для того что бы воспользоваться некоторыми функциями приложение, откройте настойки вашего приложения и разрешите доступ к локации",
+      "gwslib:map:go_to_setting": "Перейти к настройке",
     };
   }
 }
 
 class MoldApplicationWidget extends StatelessWidget {
-  static MoldApplicationWidget _applicationWidget;
-  BuildContext _context;
+  static MoldApplicationWidget? _applicationWidget;
+  BuildContext? _context;
 
   void _setContext(BuildContext context) {
     _context = context;
   }
 
-  BuildContext getContext() => _context;
+  BuildContext? getContext() => _context;
 
   static MoldApplicationWidget getInstance() {
-    return _applicationWidget;
+    return _applicationWidget!;
   }
 
   final MoldApplication application;

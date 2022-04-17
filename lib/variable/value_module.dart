@@ -9,11 +9,13 @@ import 'package:flutter_mold/variable/variable_like.dart';
 import 'package:flutter_mold/variable/variable_util.dart';
 
 abstract class ValueModule extends ChangeNotifier implements VariableLike {
-  final ValueArray<ValueForm> forms;
-  final Object tag;
-  async.Timer _debounce;
+  final ValueArray<ValueForm> forms = new ValueArray();
+  final Object? tag;
+  async.Timer? _debounce;
 
-  ValueModule({@required this.forms, this.tag});
+  ValueModule({@required ValueArray<ValueForm>? forms, this.tag}) {
+    this.forms.addAll(forms?.getItems() ?? []);
+  }
 
   int getModuleId();
 

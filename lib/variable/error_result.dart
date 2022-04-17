@@ -1,16 +1,16 @@
 import 'dart:core';
+import 'dart:core' as core;
 
 import 'package:flutter_mold/flutter_mold.dart';
-import 'dart:core' as core;
 
 abstract class ErrorResult {
   bool isError();
 
   bool nonError() => !isError();
 
-  String getErrorMessage();
+  String? getErrorMessage();
 
-  core.Exception getException();
+  core.Exception? getException();
 
   ErrorResult or(core.dynamic that) {
     if (this.isError()) {
@@ -23,7 +23,7 @@ abstract class ErrorResult {
     return ErrorResult.NONE;
   }
 
-  static ErrorResult makeWithString(String errorMessage) {
+  static ErrorResult makeWithString(String? errorMessage) {
     if (errorMessage == null) {
       throw core.Exception("The error message cannot be null");
     }
@@ -35,26 +35,10 @@ abstract class ErrorResult {
   }
 
   static ErrorResult makeWithException(core.Exception error) {
-    if (error == null) {
-      throw core.Exception("The error type cannot be null");
-    }
-
-    if (error == null) {
-      throw core.Exception("Exception type is null");
-    }
-
     return new Error(error.toString(), error);
   }
 
   static ErrorResult make(core.dynamic error) {
-    if (error == null) {
-      throw core.Exception("The error type cannot be null");
-    }
-
-    if (error == null) {
-      throw core.Exception("Exception type is null");
-    }
-
     if (error.runtimeType == core.Error) {
       String errorMessage = (error as core.Error).toString();
       return new Error(errorMessage, Exception(errorMessage));
@@ -84,10 +68,10 @@ abstract class ErrorResult {
 
 class _ErrorNone extends ErrorResult {
   @override
-  String getErrorMessage() => null;
+  String? getErrorMessage() => null;
 
   @override
-  core.Exception getException() => null;
+  core.Exception? getException() => null;
 
   @override
   bool isError() => false;
@@ -95,15 +79,15 @@ class _ErrorNone extends ErrorResult {
 
 class Error extends ErrorResult {
   final String errorMessage;
-  final Exception exception;
+  final Exception? exception;
 
   Error(this.errorMessage, [this.exception]);
 
   @override
-  String getErrorMessage() => errorMessage;
+  String? getErrorMessage() => errorMessage;
 
   @override
-  Exception getException() => exception;
+  Exception? getException() => exception;
 
   @override
   bool isError() => true;

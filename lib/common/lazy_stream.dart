@@ -3,22 +3,21 @@ import 'package:rxdart/rxdart.dart';
 typedef OnInitStream<E> = E Function();
 
 class LazyStream<E> {
-  OnInitStream<E> _onInitStream;
+  OnInitStream<E>? _onInitStream;
+  BehaviorSubject<E>? _element;
+  E? _lastAddSeedValue;
 
-  LazyStream([OnInitStream<E> onInitStream]) {
-    this._onInitStream = onInitStream ?? () => null;
+  LazyStream([OnInitStream<E>? onInitStream]) {
+    this._onInitStream = onInitStream ?? () => null as E;
   }
-
-  BehaviorSubject<E> _element;
-  E _lastAddSeedValue;
 
   BehaviorSubject<E> get() {
     if (_element == null) {
-      final seedValue = _onInitStream.call();
-      _element = BehaviorSubject.seeded(seedValue);
+      final seedValue = _onInitStream?.call();
+      _element = BehaviorSubject.seeded(seedValue as E);
       this._lastAddSeedValue = seedValue;
     }
-    return _element;
+    return _element!;
   }
 
   void add(E element) {
@@ -29,8 +28,8 @@ class LazyStream<E> {
   Stream<E> get stream => get().stream;
 
   E get value => get().value;
-  
-  E get lastSeedValue => this._lastAddSeedValue;
+
+  E? get lastSeedValue => this._lastAddSeedValue;
 
   void close() {
     get().close();

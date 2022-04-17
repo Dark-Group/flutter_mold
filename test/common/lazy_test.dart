@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_mold/common/lazy.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test("test with dynamic type", () {

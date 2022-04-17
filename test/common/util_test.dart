@@ -196,9 +196,9 @@ void main() {
   });
 
   group("test fromHex", () {
-    test("test fromHex function with null object", () {
-      expect(() => Util.fromHex(null), throwsA(isA()));
-    });
+    // test("test fromHex function with null object", () {
+    //   expect(() => Util.fromHex(null), throwsA(isA()));
+    // });
 
     test("test fromHex function with empty String", () {
       expect(() => Util.fromHex(""), throwsA(isA()));
@@ -230,9 +230,9 @@ void main() {
       expect(Util.get(Map<String, dynamic>(), "key", defaultValue: "defaultValue"), "defaultValue");
     });
 
-    test("test get function with null key", () {
-      expect(Util.get(Map<String, dynamic>(), null), isEmpty);
-    });
+    // test("test get function with null key", () {
+    //   expect(Util.get(Map<String, dynamic>(), null), isEmpty);
+    // });
 
     test("test get function with null default key", () {
       expect(Util.get({"key1": 1, "key2": "value2"}, "key", defaultValue: null), isNull);

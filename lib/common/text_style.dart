@@ -6,7 +6,7 @@ TextStyle TS_ErrorText({Color textColor = Colors.redAccent, double fontSize = 12
   return TextStyle(color: textColor, fontSize: fontSize, letterSpacing: 0.4);
 }
 
-TextStyle TS_Title_1([Color color]) {
+TextStyle TS_Title_1([Color? color]) {
   Color textColor = color ?? Colors.black87;
   return TextStyle(
     color: textColor,
@@ -17,7 +17,7 @@ TextStyle TS_Title_1([Color color]) {
   );
 }
 
-TextStyle TS_Title_2([Color color, double fontSize = 24]) {
+TextStyle TS_Title_2([Color? color, double fontSize = 24]) {
   Color textColor = color ?? Colors.black87;
   return TextStyle(
     color: textColor,
@@ -27,7 +27,7 @@ TextStyle TS_Title_2([Color color, double fontSize = 24]) {
   );
 }
 
-TextStyle TS_Title_3([Color color, double fontSize = 20]) {
+TextStyle TS_Title_3([Color? color, double fontSize = 20]) {
   Color textColor = color ?? Colors.black87;
   return TextStyle(
     color: textColor,
@@ -40,5 +40,10 @@ TextStyle TS_Title_3([Color color, double fontSize = 20]) {
 
 TextStyle TS_Button([Color textColor = Colors.black87]) {
   return TextStyle(
-      color: textColor, fontSize: 14, letterSpacing: 0.4, fontFamily: "Roboto", fontWeight: FontWeight.w500);
+    color: textColor,
+    fontSize: 14,
+    letterSpacing: 0.4,
+    fontFamily: "Roboto",
+    fontWeight: FontWeight.w500,
+  );
 }
