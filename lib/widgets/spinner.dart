@@ -13,13 +13,13 @@ typedef ItemBuilder<E> = Widget Function(E item);
 
 class SpinnerValue {
   List<SpinnerOption> options;
-  SpinnerOption value;
+  SpinnerOption? value;
 
   SpinnerValue(this.options, {this.value}) {
     checkUnique(options);
 
     if (value != null) {
-      int findValuesCount = options.where((element) => element.code == value.code).length;
+      int findValuesCount = options.where((element) => element.code == value!.code).length;
       if (findValuesCount == 0) {
         throw Exception("value ${value.toString()} not found exception");
       } else if (findValuesCount != 1) {
@@ -34,15 +34,11 @@ class SpinnerValue {
     }
   }
 
-  SpinnerValue.code(this.options, String selectedCode) {
+  SpinnerValue.code(this.options, String? selectedCode) {
     checkUnique(options);
 
     if (selectedCode != null) {
-      SpinnerOption option = options.firstWhere((e) => e.code == selectedCode, orElse: () => null);
-      if (option == null) {
-        throw Exception("value ${value.toString()} not found exception");
-      }
-      this.value = option;
+      this.value = options.firstWhere((e) => e.code == selectedCode);
     } else {
       if (options.isNotEmpty) {
         this.value = options.first;
@@ -69,7 +65,7 @@ class SpinnerValue {
 class SpinnerOption {
   String code;
   String name;
-  Object tag;
+  Object? tag;
 
   SpinnerOption(this.code, this.name, {this.tag});
 
@@ -83,40 +79,39 @@ class SpinnerOption {
 }
 
 class MySpinner extends MoldStatefulWidget {
-  SpinnerValue _value;
-  String _title;
-  TextStyle _titleTextStyle;
-  TextStyle style;
-  SpinnerItemSelect<SpinnerOption> _onItemSelect;
+  SpinnerValue? _value;
+  String? _title;
+  TextStyle? _titleTextStyle;
+  TextStyle? style;
+  SpinnerItemSelect<SpinnerOption>? _onItemSelect;
   EdgeInsets titlePadding = EdgeInsets.only(left: 16, right: 16, top: 8);
   EdgeInsets itemPadding = EdgeInsets.only(left: 16, right: 16);
   EdgeInsets itemMargin = EdgeInsets.all(8);
   BorderRadius itemBorderRadius = MyTable.borderRadiusAll(8);
-  bool withoutBorder;
-  bool textWrapped;
-  Widget dropDownIcon;
-  Widget icon;
-  Key key;
+  bool? withoutBorder;
+  bool? textWrapped;
+  Widget? dropDownIcon;
+  Widget? icon;
+  Key? key;
 
   LazyStream<DropdownMenuItem<SpinnerOption>> selectValueSubject = LazyStream();
 
   MySpinner(SpinnerValue value,
-      {Key key,
-      String title,
-      TextStyle titleTextStyle,
-      EdgeInsets titlePadding,
-      EdgeInsets itemPadding,
-      EdgeInsets itemMargin,
-      String notSelectedText,
-      Widget icon,
-      Widget dropDownIcon,
-      TextStyle style,
-      TextStyle notSelectedTextStyle,
-      BorderRadius itemBorderRadius,
+      {Key? key,
+      String? title,
+      TextStyle? titleTextStyle,
+      EdgeInsets? titlePadding,
+      EdgeInsets? itemPadding,
+      EdgeInsets? itemMargin,
+      String? notSelectedText,
+      Widget? icon,
+      Widget? dropDownIcon,
+      TextStyle? style,
+      TextStyle? notSelectedTextStyle,
+      BorderRadius? itemBorderRadius,
       bool withoutBorder = false,
       bool textWrapped = false,
-      SpinnerItemSelect<SpinnerOption> onSelected}) {
-    assert(value != null);
+      SpinnerItemSelect<SpinnerOption>? onSelected}) {
     this._value = value;
     this._title = title;
     this._titleTextStyle = titleTextStyle;
@@ -154,10 +149,10 @@ class MySpinner extends MoldStatefulWidget {
   List<DropdownMenuItem<SpinnerOption>> menus = [];
 
   List<DropdownMenuItem<SpinnerOption>> get getMenus {
-    if (menus?.isNotEmpty == true) {
+    if (menus.isNotEmpty == true) {
       return menus;
     } else {
-      menus = _value.options.map<DropdownMenuItem<SpinnerOption>>((SpinnerOption value) {
+      menus = _value!.options.map<DropdownMenuItem<SpinnerOption>>((SpinnerOption value) {
         return DropdownMenuItem<SpinnerOption>(value: value, child: MyText(value.name, style: style));
       }).toList();
       return menus;
@@ -165,7 +160,7 @@ class MySpinner extends MoldStatefulWidget {
   }
 
   DropdownMenuItem<SpinnerOption> get selectedMenu =>
-      getMenus.firstWhere((element) => element.value.code == _value.value.code, orElse: () => getMenus.first);
+      getMenus.firstWhere((element) => element.value!.code == _value!.value?.code, orElse: () => getMenus.first);
 
   @override
   void onCreate() {
@@ -173,9 +168,7 @@ class MySpinner extends MoldStatefulWidget {
     selectValueSubject.add(selectedMenu);
 
     this.selectValueSubject.get().listen((value) {
-      if (_onItemSelect != null) {
-        _onItemSelect.call(value.value);
-      }
+      _onItemSelect?.call(value!.value!);
     });
   }
 
@@ -183,9 +176,9 @@ class MySpinner extends MoldStatefulWidget {
   Widget onCreateWidget(BuildContext context) {
     List<Widget> widgets = <Widget>[];
 
-    if (_title != null && _title.length > 0) {
+    if (_title?.isNotEmpty == true) {
       widgets.add(MyText(
-        _title,
+        _title!,
         style: _titleTextStyle != null
             ? _titleTextStyle
             : TextStyle(color: Colors.black87, fontSize: 10.0, letterSpacing: 1.5, fontFamily: "Roboto"),
@@ -201,20 +194,20 @@ class MySpinner extends MoldStatefulWidget {
         if (icon != null) {
           return MyTable.horizontal(
             [
-              Expanded(child: icon, flex: 1),
+              Expanded(child: icon!, flex: 1),
               SizedBox(height: 6),
-              Expanded(child: _buildDropDown(selectValueSubject.value), flex: 9)
+              Expanded(child: _buildDropDown(selectValueSubject.value!), flex: 9)
             ],
             crossAxisAlignment: CrossAxisAlignment.center,
             width: double.infinity,
           );
         } else {
-          return _buildDropDown(selectValueSubject.value);
+          return _buildDropDown(selectValueSubject.value!);
         }
       },
     );
 
-    if (withoutBorder) {
+    if (withoutBorder == true) {
       widgets.add(MyTable(
         [body],
         width: double.infinity,
@@ -246,15 +239,15 @@ class MySpinner extends MoldStatefulWidget {
   Widget _buildDropDown(DropdownMenuItem<SpinnerOption> selectValue) {
     Widget result = DropdownButton<SpinnerOption>(
       key: key,
-      isExpanded: textWrapped,
+      isExpanded: textWrapped == true,
       value: selectValue.value,
       icon: dropDownIcon != null ? dropDownIcon : Icon(Icons.arrow_drop_down, color: Colors.black38),
       underline: Container(),
       items: getMenus,
       onChanged: (newValue) {
-        if (newValue.code != selectValueSubject.value.value.code) {
-          _value.value = newValue;
-          final foundValue = getMenus.firstWhere((e) => e.value.code == newValue.code);
+        if (newValue!.code != selectValueSubject.value!.value?.code) {
+          _value?.value = newValue;
+          final foundValue = getMenus.firstWhere((e) => e.value?.code == newValue.code);
           this.selectValueSubject.add(foundValue);
         }
       },

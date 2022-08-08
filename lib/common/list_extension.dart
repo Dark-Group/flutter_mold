@@ -13,23 +13,27 @@ extension MyIterable<T, R> on Iterable<T> {
     keys.clear();
   }
 
-  bool hasValueInstance(T value) {
-    return this.firstWhere((e) => e == value, orElse: () => null) != null;
+  T? firstWhere(bool test(T element)) {
+    for (T element in this) {
+      if (test(element)) return element;
+    }
+    return null;
   }
 
-  T findWhere(bool Function(T element) predicate) {
-    return this.firstWhere((e) => predicate.call(e), orElse: () => null);
+
+  bool hasValueInstance(T value) {
+    return firstWhere((e) => e == value) != null;
+  }
+
+  T? findWhere(bool Function(T element) predicate) {
+    return firstWhere((e) => predicate.call(e));
   }
 
   bool containsWhere(bool Function(T element) predicate) {
-    return this.firstWhere((e) => predicate.call(e), orElse: () => null) != null;
+    return firstWhere((e) => predicate.call(e)) != null;
   }
 
-  Iterable<T> filterNotNull() {
-    return this.where((e) => e != null);
-  }
+  Iterable<T> filterNotNull() => where((e) => e != null);
 
-  Iterable<T> filterWhere(bool Function(T element) predicate) {
-    return this.where((e) => predicate.call(e));
-  }
+  Iterable<T> filterWhere(bool Function(T element) predicate) => where((e) => predicate.call(e));
 }

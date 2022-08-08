@@ -13,7 +13,7 @@ typedef GetTranslates = Map<String, String> Function(String);
 class AppLang {
   static final AppLang instance = AppLang._();
   @visibleForTesting
-  static AppLang mockInstance;
+  static AppLang? mockInstance;
 
   @visibleForTesting
   static void setMockInstance(AppLang mi) {
@@ -22,13 +22,13 @@ class AppLang {
 
   static AppLang getInstance() => mockInstance ?? instance;
 
-  GetTranslates onGetTranslate;
+  GetTranslates? onGetTranslate;
 
   final Map<String, String> _supportLangs = {};
   final Map<String, String> _localizations = {};
 
-  String _defaultLangCode;
-  String _langCode;
+  String? _defaultLangCode;
+  String? _langCode;
 
   AppLang._();
 
@@ -51,7 +51,7 @@ class AppLang {
       if (_supportLangs.containsKey(systemLangCode)) {
         langCode = systemLangCode;
       } else {
-        langCode = _defaultLangCode;
+        langCode = _defaultLangCode!;
       }
 
       await LocalizationPref.setLanguage(langCode);
@@ -61,7 +61,7 @@ class AppLang {
     return true;
   }
 
-  bool get isInit => _langCode != null && _langCode.isNotEmpty;
+  bool get isInit => _langCode?.isNotEmpty == true;
 
   Future<void> changeLanguage(String langCode, {bool isNotify = true}) async {
     if (!_supportLangs.containsKey(langCode)) {
@@ -98,35 +98,35 @@ class AppLang {
 
   List<Locale> getSupportLangs() => _supportLangs.keys.map((e) => new Locale(e)).toList();
 
-  Locale getLocale() => new Locale(_langCode);
+  Locale getLocale() => new Locale(_langCode!);
 
-  String getLangCode() => _langCode;
+  String getLangCode() => _langCode!;
 
-  String translate(String code, {List<String> args, Map<String, String> withKeys}) {
+  String translate(String code, {List<String>? args, Map<String, String>? withKeys}) {
     if (_localizations.containsKey(code)) {
       var value = _localizations[code];
       if (value != null && value.length > 0) {
         // with arguments by index
         if (args != null && args.isNotEmpty) {
           for (int i = 0; i < args.length; i++) {
-            value = value.replaceAll("%${i + 1}s", args[i]);
+            value = value!.replaceAll("%${i + 1}s", args[i]);
           }
         }
         // with arguments by keys
         if (withKeys != null && withKeys.isNotEmpty) {
           for (final item in withKeys.entries) {
-            value = value.replaceAll("[$item]", item.value);
+            value = value!.replaceAll("[$item]", item.value);
           }
         }
       }
-      return value;
+      return value ?? code;
     }
     return code;
   }
 }
 
 extension StringTranslator on String {
-  String translate({List<String> args, Map<String, String> withKeys}) {
+  String translate({List<String>? args, Map<String, String>? withKeys}) {
     return AppLang.getInstance().translate(this, args: args, withKeys: withKeys);
   }
 }

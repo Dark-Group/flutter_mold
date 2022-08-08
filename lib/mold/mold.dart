@@ -5,11 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mold/localization/app_lang.dart';
 import 'package:flutter_mold/log/logger.dart';
-import 'package:flutter_mold/mold/fragment.dart';
 import 'package:flutter_mold/mold/mold_application.dart';
 import 'package:flutter_mold/mold/style.dart';
 import 'package:flutter_mold/mold2/bundle.dart';
@@ -19,7 +17,7 @@ class Mold {
   static void startApplication(
     MoldApplication application, {
     List<NavigatorObserver> navigatorObservers = const <NavigatorObserver>[],
-    Function onError,
+    Function? onError,
   }) {
     runZonedGuarded(() {
       WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +25,7 @@ class Mold {
         MoldApplicationWidget((_) {
           return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
             final colors = MoldStyle.instance.color;
+
             Future.delayed(Duration(milliseconds: 50))
                 .then((_) => SystemChrome.setSystemUIOverlayStyle(colors.systemStyle));
             return getPlatformApp(application, colors, navigatorObservers);
@@ -48,10 +47,12 @@ class Mold {
     if (kIsWeb) {
       return MaterialApp(
         theme: ThemeData(
-          brightness: color.brightness ?? Brightness.light,
+          brightness: color.brightness,
           toggleableActiveColor: color.app_color,
-          colorScheme: ColorScheme.fromSwatch()
-              .copyWith(brightness: color.brightness ?? Brightness.light, secondary: color.app_color),
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+            brightness: color.brightness,
+            secondary: color.app_color,
+          ),
         ),
         routes: application.getRoutes(),
         locale: appLang.getLocale(),
@@ -66,7 +67,7 @@ class Mold {
     } else if (Platform.isIOS) {
       return CupertinoApp(
         theme: CupertinoThemeData(
-          brightness: color.brightness ?? Brightness.light,
+          brightness: color.brightness,
           primaryColor: color.app_color,
           primaryContrastingColor: color.app_color,
         ),
@@ -83,10 +84,12 @@ class Mold {
     } else {
       return MaterialApp(
         theme: ThemeData(
-          brightness: color.brightness ?? Brightness.light,
+          brightness: color.brightness,
           toggleableActiveColor: color.app_color,
-          colorScheme: ColorScheme.fromSwatch()
-              .copyWith(brightness: color.brightness ?? Brightness.light, secondary: color.app_color),
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+            brightness: color.brightness,
+            secondary: color.app_color,
+          ),
         ),
         routes: application.getRoutes(),
         locale: appLang.getLocale(),
@@ -102,68 +105,55 @@ class Mold {
   }
 
   static Widget newInstance(Object content) {
-    if (content is RootFragment) {
-      return new Fragment(content);
-    } else if (content is Screen) {
+    if (content is Screen) {
       return new Window(content);
     } else {
       throw new UnsupportedError("cannot create instance content type unsupported");
     }
   }
 
-  static void openContent<R>(BuildContext context, dynamic content, {Object bundle, void onPopResult(R result)}) {
-    Bundle argumentBundle = bundle;
+  static void openContent<R>(
+    BuildContext context,
+    dynamic content, {
+    Bundle? bundle,
+    void onPopResult(R? result)?,
+  }) {
+    Bundle? argumentBundle = bundle;
     if (argumentBundle == null) {
       argumentBundle = Bundle.newBundle(context);
     }
 
-    Future<R> push;
-    if (content is RootFragment) {
-      push = Navigator.push<R>(
-        context,
-        new MaterialPageRoute(builder: (_) => Mold.newInstance(content..argument = argumentBundle)),
-      );
-    } else if (content is String) {
-      push = Navigator.pushNamed(
-        context,
-        content,
-        arguments: argumentBundle,
-      );
-    } else {
-      throw new UnsupportedError("cannot openContent content not support");
-    }
+    Future<R?> push = Navigator.pushNamed(
+      context,
+      content,
+      arguments: argumentBundle,
+    );
 
     push.then((value) => onPopResult?.call(value));
   }
 
-  static void replaceContent<R>(BuildContext context, dynamic content, {Object bundle, void onPopResult(R result)}) {
-    Bundle argumentBundle = bundle;
+  static void replaceContent<R>(
+    BuildContext context,
+    dynamic content, {
+    Bundle? bundle,
+    void onPopResult(R? result)?,
+  }) {
+    Bundle? argumentBundle = bundle;
     if (argumentBundle == null) {
       argumentBundle = Bundle.newBundle(context);
     }
 
-    Future<R> push;
-    if (content is RootFragment) {
-      push = Navigator.pushAndRemoveUntil<R>(
-        context,
-        new MaterialPageRoute(builder: (_) => Mold.newInstance(content..argument = argumentBundle)),
-        (routes) => false,
-      );
-    } else if (content is String) {
-      push = Navigator.pushNamedAndRemoveUntil(
-        context,
-        content,
-        (routes) => false,
-        arguments: argumentBundle,
-      );
-    } else {
-      throw new UnsupportedError("cannot replaceContent content not support");
-    }
+    Future<R?> push = Navigator.pushNamedAndRemoveUntil(
+      context,
+      content,
+      (routes) => false,
+      arguments: argumentBundle,
+    );
 
     push.then((value) => onPopResult?.call(value));
   }
 
-  static void onBackPressed<T extends Object>(BuildContext context, [T result]) {
+  static void onBackPressed<T extends Object>(BuildContext context, [T? result]) {
     Navigator.pop<T>(context, result);
   }
 
@@ -181,7 +171,7 @@ class Mold {
     }
   }
 
-  static void focusKeyboard(BuildContext context, [FocusNode node]) {
+  static void focusKeyboard(BuildContext context, [FocusNode? node]) {
     FocusScope.of(context).requestFocus(node);
   }
 }

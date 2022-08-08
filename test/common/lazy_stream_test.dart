@@ -44,11 +44,11 @@ void main() {
     expect(lazy.get().runtimeType, equals(BehaviorSubject<int>().runtimeType));
     expect(lazy.value, isNull);
 
-    BehaviorSubject<int> oldSubject = lazy.get();
+    BehaviorSubject<int?> oldSubject = lazy.get();
     expect(oldSubject, equals(lazy.get()));
 
     lazy.close();
-    BehaviorSubject<int> newSubject = lazy.get();
+    BehaviorSubject<int?> newSubject = lazy.get();
     expect(newSubject, isNot(equals(oldSubject)));
   });
 }

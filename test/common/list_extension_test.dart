@@ -1,12 +1,8 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_mold/common/list_extension.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group("test checkUniqueness function", () {
-    test("check with null onMap function", () {
-      expect(() => [1, 2, 3, 5].checkUniqueness(null), throwsA(isA()));
-    });
-
     test("check with empty list", () {
       [].checkUniqueness((element) => element.toString());
     });
@@ -26,7 +22,7 @@ void main() {
     });
 
     test("search null object inside list", () {
-      expect([1, 32, 546].hasValueInstance(null), isFalse);
+      expect(<int?>[1, 32, 546].hasValueInstance(null), isFalse);
     });
 
     test("search null object inside contain null objects list ", () {
@@ -38,10 +34,6 @@ void main() {
   });
 
   group("test findWhere function", () {
-    test("check with null predicate function", () {
-      expect(() => [1, 2, 3, 5].findWhere(null), throwsA(isA()));
-    });
-
     test("check with empty list", () {
       expect([].findWhere((element) => true), isNull);
     });
@@ -56,10 +48,6 @@ void main() {
   });
 
   group("test containsWhere function", () {
-    test("check with null predicate function", () {
-      expect(() => [1, 2, 3, 5].containsWhere(null), throwsA(isA()));
-    });
-
     test("check with empty list", () {
       expect([].containsWhere((e) => true), isFalse);
     });
@@ -92,10 +80,6 @@ void main() {
   });
 
   group("test filterWhere function", () {
-    test("check with null predicate function", () {
-      expect(() => [1, 2, 3, 5].filterWhere(null), throwsA(isA()));
-    });
-
     test("check with empty list", () {
       expect([].filterWhere((e) => true), isEmpty);
     });

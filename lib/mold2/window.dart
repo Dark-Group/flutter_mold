@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mold/localization/app_lang.dart';
 import 'package:flutter_mold/mold/mold_stateful_widget.dart';
-
-import 'bundle.dart';
+import 'package:flutter_mold/mold2/bundle.dart';
 
 class Window extends StatelessWidget {
   final Screen screen;
@@ -42,13 +41,13 @@ class _WindowState extends MoldStatefulWidget {
 }
 
 abstract class Screen {
-  _WindowState _windowState;
+  _WindowState? _windowState;
 
-  Bundle get bundle {
-    BuildContext context = getContext();
+  Bundle? get bundle {
+    BuildContext? context = getContext();
 
     if (context != null) {
-      return ModalRoute.of(context).settings.arguments;
+      return ModalRoute.of(context)?.settings.arguments as Bundle;
     } else {
       return null;
     }
@@ -60,9 +59,11 @@ abstract class Screen {
     this._windowState = windowState;
   }
 
-  BuildContext getContext() => this._windowState?.windowContext;
+  BuildContext? getContext() => this._windowState?.windowContext;
 
-  String getString(String code, {List<String> args}) => code.translate(args: args);
+  BuildContext requiredContext() => getContext()!;
+
+  String getString(String code, {List<String>? args}) => code.translate(args: args);
 
   void onDestroy() {}
 

@@ -50,11 +50,11 @@ extension DoubleExtentions on double {
     return this;
   }
 
-  double takeIf(bool predicate(double it)) {
+  double? takeIf(bool predicate(double it)) {
     return predicate(this) == true ? this : null;
   }
 
-  double takeUnless(bool predicate(double it)) {
+  double? takeUnless(bool predicate(double it)) {
     return predicate(this) == false ? this : null;
   }
 }
@@ -65,27 +65,27 @@ extension IntExtentions on int {
     return this;
   }
 
-  int takeIf(bool predicate(int it)) {
+  int? takeIf(bool predicate(int it)) {
     return predicate(this) == true ? this : null;
   }
 
-  int takeUnless(bool predicate(int it)) {
+  int? takeUnless(bool predicate(int it)) {
     return predicate(this) == false ? this : null;
   }
 }
 
 extension ObjectExtentions on Object {
   T let<T>(fun(T it)) {
-    fun(this);
-    return this;
+    fun(this as T);
+    return this as T;
   }
 
-  T takeIf<T>(bool predicate(T it)) {
-    return predicate(this) == true ? this : null;
+  T? takeIf<T>(bool predicate(T it)) {
+    return predicate(this as T) == true ? this as T : null;
   }
 
-  T takeUnless<T>(bool predicate(T it)) {
-    return predicate(this) == false ? this : null;
+  T? takeUnless<T>(bool predicate(T it)) {
+    return predicate(this as T) == false ? this as T : null;
   }
 
   void repeat(int times, action(int time)) {
@@ -101,11 +101,11 @@ extension StringExtentions on String {
     return this;
   }
 
-  String takeIf(bool predicate(String it)) {
+  String? takeIf(bool predicate(String it)) {
     return predicate(this) == true ? this : null;
   }
 
-  String takeUnless(bool predicate(String it)) {
+  String? takeUnless(bool predicate(String it)) {
     return predicate(this) == false ? this : null;
   }
 
@@ -117,26 +117,26 @@ extension StringExtentions on String {
 
   int toInt() => int.parse(this);
 
-  int toTryInt() => int.tryParse(this);
+  int? toTryInt() => int.tryParse(this);
 
   double toDouble() => double.parse(this);
 
-  double toTryDouble() => double.tryParse(this);
+  double? toTryDouble() => double.tryParse(this);
 }
 
 extension ListExtensions<T> on Iterable<T> {
-  List<R> mapNotNullTo<R, C extends List<R>>(C destination, R transform(T)) {
+  List<R> mapNotNullTo<R, C extends List<R>>(C destination, R? transform(T)) {
     this.forEach((element) {
-      transform.call(element)?.let((it) => (destination).add(it));
+      transform.call(element)?.let((it) => (destination).add(it as R));
     });
     return destination;
   }
 
-  List<R> mapNotNull<R>(R transform(T)) {
+  List<R> mapNotNull<R>(R? transform(T)) {
     return this.mapNotNullTo<R, List<R>>(<R>[], transform);
   }
 
-  List<K> mapList<K>(K Function(T element) transform) {
+  List<K?> mapList<K>(K? Function(T element) transform) {
     return this.map(transform).toList();
   }
 
@@ -144,7 +144,13 @@ extension ListExtensions<T> on Iterable<T> {
 
   Iterable<T> whereNot(bool test(T element)) => this.where((e) => !test(e));
 
-  T firstWhereOrNull(bool test(T element)) => this.firstWhere(test, orElse: () => null);
+  T? firstWhereOrNull(bool test(T element)) {
+    final result = this.where(test);
+    return result.isEmpty ? null : result.first;
+  }
 
-  T lastWhereOrNull(bool test(T element)) => this.lastWhere(test, orElse: () => null);
+  T? lastWhereOrNull(bool test(T element)) {
+    final result = this.where(test);
+    return result.isEmpty ? null : result.last;
+  }
 }

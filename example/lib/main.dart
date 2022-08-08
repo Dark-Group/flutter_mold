@@ -1,59 +1,27 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_mold/flutter_mold.dart';
 
 void main() {
-  runApp(const MyApp());
+  Mold.startApplication(ExampleApplication());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key key}) : super(key: key);
-
+class ExampleApplication extends MoldApplication {
   @override
-  State<MyApp> createState() => _MyAppState();
+  Map<String, WidgetBuilder> getRoutes() {
+    return {
+      IntroPage.routeName: (_) => Window(IntroPage()),
+    };
+  }
 }
 
-class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+class IntroPage extends Screen {
+  static const String routeName = "/";
 
   @override
-  void initState() {
-    super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion = 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
+  Widget onCreateWidget(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: Text("First Page"),
       ),
     );
   }

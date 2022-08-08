@@ -9,13 +9,13 @@ class ValueString extends ChangeNotifier implements TextValue {
   String _value = "";
   final bool _mandatory;
 
-  ValueString({@required this.size, String value = "", bool mandatory = false}) : this._mandatory = mandatory {
+  ValueString({required this.size, String value = "", bool mandatory = false}) : this._mandatory = mandatory {
     this._value = nvlString(value);
   }
 
   String getValue() => _value;
 
-  void setValue(String value) {
+  void setValue(String? value) {
     this._value = nvlString(value);
     notifyListeners();
   }

@@ -7,9 +7,9 @@ class MyTextBloc extends ChangeNotifier {
   // String value to upper case
   // @example "Hello World" -> "HELLO WORLD!"
   //------------------------------------------------------------------------------------------------
-  bool _upperCase;
+  bool? _upperCase;
 
-  set upperCase(bool upper) {
+  set upperCase(bool? upper) {
     _upperCase = upper;
     notifyListeners();
   }
@@ -18,9 +18,9 @@ class MyTextBloc extends ChangeNotifier {
   // String value to lower case
   // @example "Hello World" -> "hello world!"
   //------------------------------------------------------------------------------------------------
-  bool _lowerCase;
+  bool? _lowerCase;
 
-  set lowerCase(bool lower) {
+  set lowerCase(bool? lower) {
     _lowerCase = lower;
     notifyListeners();
   }
@@ -28,9 +28,9 @@ class MyTextBloc extends ChangeNotifier {
   //------------------------------------------------------------------------------------------------
   // String singleLine
   //------------------------------------------------------------------------------------------------
-  bool _singleLine;
+  bool? _singleLine;
 
-  set singleLine(bool newValue) {
+  set singleLine(bool? newValue) {
     _singleLine = newValue;
     notifyListeners();
   }
@@ -38,14 +38,14 @@ class MyTextBloc extends ChangeNotifier {
   //------------------------------------------------------------------------------------------------
   // String value
   //------------------------------------------------------------------------------------------------
-  String _text;
+  String? _text;
 
-  set text(String newValue) {
+  set text(String? newValue) {
     _text = newValue;
     notifyListeners();
   }
 
-  get text {
+  String get text {
     var value = _text ?? "";
     if (value.isNotEmpty) {
       value = AppLang.instance.translate(value);
@@ -61,108 +61,108 @@ class MyTextBloc extends ChangeNotifier {
   //------------------------------------------------------------------------------------------------
   // Text style
   //------------------------------------------------------------------------------------------------
-  TextStyle _style;
+  TextStyle? _style;
 
-  set style(TextStyle newValue) {
+  set style(TextStyle? newValue) {
     _style = newValue;
     notifyListeners();
   }
 
-  get style => _style ?? TextStyle();
+  TextStyle get style => _style ?? TextStyle();
 
   //------------------------------------------------------------------------------------------------
   // Text style
   //------------------------------------------------------------------------------------------------
-  TextAlign _textAlign;
+  TextAlign? _textAlign;
 
-  set textAlign(TextAlign newValue) {
+  set textAlign(TextAlign? newValue) {
     _textAlign = newValue;
     notifyListeners();
   }
 
-  get textAlign => _textAlign ?? TextAlign.start;
+  TextAlign get textAlign => _textAlign ?? TextAlign.start;
 
   //------------------------------------------------------------------------------------------------
   // Text overflow
   //------------------------------------------------------------------------------------------------
-  TextOverflow _overflow;
+  TextOverflow? _overflow;
 
-  set overflow(TextOverflow newValue) {
+  set overflow(TextOverflow? newValue) {
     _overflow = newValue;
     notifyListeners();
   }
 
-  get overflow => _overflow ?? (_singleLine ?? false ? TextOverflow.ellipsis : null);
+  TextOverflow? get overflow => _overflow ?? (_singleLine ?? false ? TextOverflow.ellipsis : null);
 
   //------------------------------------------------------------------------------------------------
   // Text overflow
   //------------------------------------------------------------------------------------------------
-  int _maxLines;
+  int? _maxLines;
 
-  set maxLines(int newValue) {
+  set maxLines(int? newValue) {
     _maxLines = newValue;
     notifyListeners();
   }
 
-  get maxLines => _maxLines;
+  int? get maxLines => _maxLines;
 
   //------------------------------------------------------------------------------------------------
   // Padding
   //------------------------------------------------------------------------------------------------
-  EdgeInsetsGeometry _padding;
+  EdgeInsetsGeometry? _padding;
 
-  set padding(EdgeInsetsGeometry newValue) {
+  set padding(EdgeInsetsGeometry? newValue) {
     _padding = newValue;
     notifyListeners();
   }
 
-  get padding => _padding;
+  EdgeInsetsGeometry? get padding => _padding;
 
   //------------------------------------------------------------------------------------------------
   // Text tap listener
   //------------------------------------------------------------------------------------------------
-  OnTapListener _onTap;
+  OnTapListener? _onTap;
 
-  set onTap(OnTapListener newValue) {
+  set onTap(OnTapListener? newValue) {
     _onTap = newValue;
     notifyListeners();
   }
 
-  get onTap => _onTap;
+  OnTapListener? get onTap => _onTap;
 
   //------------------------------------------------------------------------------------------------
   // Text tap border radius
   //------------------------------------------------------------------------------------------------
-  BorderRadius _tapEffectRadius;
+  BorderRadius? _tapEffectRadius;
 
-  set tapEffectRadius(BorderRadius newValue) {
+  set tapEffectRadius(BorderRadius? newValue) {
     _tapEffectRadius = newValue;
     notifyListeners();
   }
 
-  get tapEffectRadius => _tapEffectRadius;
+  BorderRadius? get tapEffectRadius => _tapEffectRadius;
 
   //------------------------------------------------------------------------------------------------
   // View Alignment
   //------------------------------------------------------------------------------------------------
-  Alignment _alignment;
+  Alignment? _alignment;
 
-  set alignment(Alignment newValue) {
+  set alignment(Alignment? newValue) {
     _alignment = newValue;
     notifyListeners();
   }
 
-  get alignment => _alignment;
+  Alignment? get alignment => _alignment;
 
   //------------------------------------------------------------------------------------------------
   // Expanded
   //------------------------------------------------------------------------------------------------
-  int _flex;
+  int? _flex;
 
-  set flex(int newValue) {
+  set flex(int? newValue) {
     _flex = newValue;
     notifyListeners();
   }
 
-  get flex => _flex;
+  int? get flex => _flex;
 }

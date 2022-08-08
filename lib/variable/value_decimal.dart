@@ -10,18 +10,21 @@ class ValueDecimal extends ChangeNotifier implements TextValue, Quantity {
   final int precision;
   final int scale;
   final ValueString _value;
-  final bool _mandatory;
+  final bool? _mandatory;
 
-  Decimal _cache;
+  Decimal? _cache;
 
-  ValueDecimal({@required this.precision, @required this.scale, bool mandatory = false})
-      : this._value = new ValueString(size: 200, mandatory: false),
+  ValueDecimal({
+    required this.precision,
+    required this.scale,
+    bool? mandatory = false,
+  })  : this._value = new ValueString(size: 200, mandatory: false),
         this._mandatory = mandatory;
 
-  Decimal getValue() {
+  Decimal? getValue() {
     if (this._cache == null) {
       String s = this._value.getValue();
-      if (s != null && s.isNotEmpty) {
+      if (s.isNotEmpty == true) {
         try {
           this._cache = new Decimal.parse(s);
         } catch (e, st) {
@@ -32,7 +35,7 @@ class ValueDecimal extends ChangeNotifier implements TextValue, Quantity {
     return this._cache;
   }
 
-  void setValue(Decimal newValue) {
+  void setValue(Decimal? newValue) {
     this._cache = null;
     String v = "";
     if (newValue != null) {
@@ -50,7 +53,7 @@ class ValueDecimal extends ChangeNotifier implements TextValue, Quantity {
     if (isEmpty()) {
       return true;
     }
-    Decimal v = getValue();
+    final v = getValue();
     return v == null || v.compareTo(Decimal.zero) == 0;
   }
 
@@ -73,14 +76,14 @@ class ValueDecimal extends ChangeNotifier implements TextValue, Quantity {
   void readyToChange() => this._value.readyToChange();
 
   @override
-  bool mandatory() => this._mandatory;
+  bool mandatory() => this._mandatory??false;
 
   @override
   bool modified() => this._value.modified();
 
   @override
   ErrorResult getError() {
-    Decimal v = getValue();
+    Decimal? v = getValue();
 
     if (this._value.nonEmpty() && v == null) {
       String errorMessage = "ValueDecimal: The field must contain only numeric";

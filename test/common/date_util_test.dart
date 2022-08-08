@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_mold/common/date_util.dart';
 import 'package:flutter_mold/flutter_mold.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
 import 'package:mockito/mockito.dart';
 
@@ -83,13 +81,13 @@ void main() {
   group("test get today function", () {
     test("test with correct time", () {
       final now = DateTime.now();
-      DateTime time = DateUtil.parse("${DateUtil.format(now, DateUtil.FORMAT_AS_DATE)} 00:00:00");
+      DateTime? time = DateUtil.parse("${DateUtil.format(now, DateUtil.FORMAT_AS_DATE)} 00:00:00");
       expect(DateUtil.today(), equals(time));
     });
 
     test("test with incorrect time", () {
       final now = DateTime.now();
-      DateTime time = DateUtil.parse("${DateUtil.format(now, DateUtil.FORMAT_AS_DATE)} 01:00:00");
+      DateTime? time = DateUtil.parse("${DateUtil.format(now, DateUtil.FORMAT_AS_DATE)} 01:00:00");
       expect(DateUtil.today(), isNot(equals(time)));
     });
   });
@@ -98,7 +96,7 @@ void main() {
     test("test with english language time", () {
       when(appLang.getLangCode())
           .thenAnswer((realInvocation) => Locale.fromSubtags(languageCode: "en_US").languageCode);
-      expect(DateUtil.getMonthYear(dateTime: DateTime(2021, 2)), equals("February 2021"));
+      expect(DateUtil.getMonthYear(DateTime(2021, 2)), equals("February 2021"));
     });
 /*    test("test with russian language time", () {
       when(appLang.getLangCode())
@@ -129,13 +127,11 @@ void main() {
 
   group("test  switchDateTime function", () {
     test("test with correct time", () {
-      expect(DateUtil.switchDateTime(DateTime(2021, 12, 25, 16, 25, 46), 5),
-          equals(DateTime(2022, 5, 25)));
+      expect(DateUtil.switchDateTime(DateTime(2021, 12, 25, 16, 25, 46), 5), equals(DateTime(2022, 5, 25)));
     });
 
     test("test with incorrect time", () {
-      expect(DateUtil.switchDateTime(DateTime(2021, 12, 25, 16, 25, 46), 5),
-          isNot(equals(DateTime(2022, 5, 25, 16))));
+      expect(DateUtil.switchDateTime(DateTime(2021, 12, 25, 16, 25, 46), 5), isNot(equals(DateTime(2022, 5, 25, 16))));
     });
   });
 
@@ -214,15 +210,11 @@ void main() {
 
   group("test  tryFormat function", () {
     test("test when time and date format are null", () {
-      expect(DateUtil.tryFormat(null, null), isNull);
+      expect(DateUtil.tryFormat(null, DateUtil.FORMAT_AS_DATE), isNull);
     });
 
     test("test when time is null and date format is not null", () {
       expect(DateUtil.tryFormat(null, DateUtil.DD_MM_EEE), isNull);
-    });
-
-    test("test when time is not null and date format is  null", () {
-      expect(DateUtil.tryFormat(DateTime.now(), null), isNull);
     });
 
     test("test with not supported date format", () {
@@ -230,37 +222,27 @@ void main() {
     });
 
     test("test with correct format", () {
-      expect(DateUtil.tryFormat(DateTime(2021, 02, 23), DateUtil.FORMAT_AS_DATE),
-          equals("23.02.2021"));
+      expect(DateUtil.tryFormat(DateTime(2021, 02, 23), DateUtil.FORMAT_AS_DATE), equals("23.02.2021"));
     });
   });
 
   group("test  formatDateTime function", () {
     test("test when time and date format are null", () {
-      expect(DateUtil.formatDateTime(null, null), isNull);
+      expect(DateUtil.formatDateTime(null, DateUtil.FORMAT_AS_DATE), isNull);
     });
 
     test("test when time is null and date format is not null", () {
       expect(DateUtil.formatDateTime(null, DateUtil.DD_MM_EEE), isNull);
     });
 
-    test("test when time is not null and date format is  null", () {
-      expect(DateUtil.formatDateTime(DateTime.now(), null), isNull);
-    });
-
     test("test with correct format", () {
-      expect(DateUtil.formatDateTime(DateTime(2021, 02, 23), DateUtil.FORMAT_AS_DATE),
-          DateTime(2021, 02, 23));
+      expect(DateUtil.formatDateTime(DateTime(2021, 02, 23), DateUtil.FORMAT_AS_DATE), DateTime(2021, 02, 23));
     });
   });
 
   group("test  tryConvert function", () {
     test("test when time and date format are null", () {
-      expect(DateUtil.tryConvert(null, null), isNull);
-    });
-
-    test("test when time is empty and date format is not null", () {
-      expect(DateUtil.tryConvert("", null), isNull);
+      expect(DateUtil.tryConvert(null, DateUtil.FORMAT_AS_DATE), isNull);
     });
 
     test("test when time is null and date format is not null", () {
@@ -290,14 +272,12 @@ void main() {
     });
 
     test("test when time is only minute", () {
-      when(appLang.translate("gwslib:date_util:minute", args: ["36"]))
-          .thenAnswer((realInvocation) => "36 мин");
+      when(appLang.translate("gwslib:date_util:minute", args: ["36"])).thenAnswer((realInvocation) => "36 мин");
       expect(DateUtil.convertMinuteToTimeText("36"), equals("36 мин"));
     });
 
     test("test when time is only hour", () {
-      when(appLang.translate("gwslib:date_util:hour", args: ["2"]))
-          .thenAnswer((realInvocation) => "2 ч");
+      when(appLang.translate("gwslib:date_util:hour", args: ["2"])).thenAnswer((realInvocation) => "2 ч");
       expect(DateUtil.convertMinuteToTimeText("120"), equals("2 ч"));
     });
 

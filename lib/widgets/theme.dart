@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
 
 class GStyle {
-  static GStyle _instance;
+  static GStyle? _instance;
 
   static GStyle getInstance() {
     if (_instance == null) {
       _instance = GStyle._();
-      _instance._theme = GThemeLight();
+      _instance!._theme = GThemeLight();
     }
-    return _instance;
+    return _instance!;
   }
 
   static GTheme getTheme() {
     return getInstance().theme;
   }
 
-  static GStyle init({GTheme theme}) {
+  static GStyle init({GTheme? theme}) {
     _instance = GStyle._();
-    _instance._theme = theme ?? GThemeLight();
-    return _instance;
+    _instance!._theme = theme ?? GThemeLight();
+    return _instance!;
   }
 
   GStyle._();
 
-  GTheme _theme;
+  GTheme? _theme;
 
-  GTheme get theme => _theme;
+  GTheme get theme => _theme!;
 }
 
 class GTheme {

@@ -5,11 +5,11 @@ import 'package:flutter_mold/variable/variable_util.dart';
 
 abstract class ValueForm extends ChangeNotifier implements VariableLike {
   final String code;
-  final Object tag;
+  final Object? tag;
   final bool _mandatory;
-  bool _enable;
+  bool? _enable;
 
-  ValueForm({@required this.code, this.tag, bool mandatory = false}) : this._mandatory = mandatory;
+  ValueForm({required this.code, this.tag, bool mandatory = false}) : this._mandatory = mandatory;
 
   bool hasValue();
 

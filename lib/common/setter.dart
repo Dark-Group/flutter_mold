@@ -1,13 +1,9 @@
 class Setter<T> {
-  T _value;
+  T? value;
 
-  Setter([T value]) {
-    this._value = value;
+  Setter([T? value]) {
+    this.value = value;
   }
 
-  set value(T newValue) {
-    _value = newValue;
-  }
-
-  T get value => _value;
+  T get valueRequired => value!;
 }

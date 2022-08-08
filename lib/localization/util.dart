@@ -10,22 +10,23 @@ class AppLangUtil {
     final filePath = 'assets/l10n/support_langs.json';
     final jsonString = await rootBundle.loadString(filePath).catchError((e, st) {
       Log.error(e, st);
-      return "";
+      return "{}";
     });
 
-    if (jsonString == null || jsonString.trim().isEmpty) {
-      throw Exception("$filePath not found");
-    }
-
     Map<String, dynamic> data = json.decode(jsonString);
-    final defaultLangCode = data["default"];
+    final defaultLangCode = data.containsKey("default") ? data["default"] : "ru";
     data.remove("default");
 
     Map<String, String> languages = data.map((key, value) => MapEntry(
           key.toLowerCase().split("_").first.trim(),
           value.toString().trim(),
         ));
+
     languages.removeWhere((key, value) => value.isEmpty);
+
+    if (languages.isEmpty) {
+      languages["ru"] = "Русский";
+    }
 
     return new Tuple(defaultLangCode, languages);
   }

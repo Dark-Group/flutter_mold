@@ -26,12 +26,11 @@ class DateUtil {
   static final DateFormat FORMAT_AS_MONTH = DateFormat("yyyy:MM");
   static final DateFormat MONTH_YEAR = DateFormat("MM.yyyy");
 
-  static final Getter<DateFormat> DAY_WEEK =
-      new Getter(() => DateFormat("EE", AppLang.getInstance().getLangCode()));
+  static final Getter<DateFormat> DAY_WEEK = new Getter(() => DateFormat("EE", AppLang.getInstance().getLangCode()));
   static final Getter<DateFormat> FORMAT_DD_MMMM_YYYY_EEE =
       new Getter(() => DateFormat("dd MMMM yyyy (EEE)", AppLang.getInstance().getLangCode()));
   static final Getter<DateFormat> FORMAT_DD_MMMM_YYYY =
-  new Getter(() => DateFormat("dd MMMM yyyy", AppLang.getInstance().getLangCode()));
+      new Getter(() => DateFormat("dd MMMM yyyy", AppLang.getInstance().getLangCode()));
   static final Getter<DateFormat> DAY_MONTH =
       new Getter(() => DateFormat("dd MMMM", AppLang.getInstance().getLangCode()));
   static final Getter<DateFormat> DAY_MONTH_SHORT =
@@ -43,10 +42,10 @@ class DateUtil {
 
   static DateTime today() {
     final now = DateTime.now();
-    return parse("${format(now, DateUtil.FORMAT_AS_DATE)} 00:00:00");
+    return parse("${format(now, DateUtil.FORMAT_AS_DATE)} 00:00:00")!;
   }
 
-  static String getMonthYear({DateTime dateTime}) {
+  static String getMonthYear(DateTime? dateTime) {
     final date = dateTime ?? DateTime.now();
     final month = DateFormat.MMMM(AppLang.getInstance().getLangCode()).format(date);
     final year = date.year.toString();
@@ -59,7 +58,7 @@ class DateUtil {
     return date1.compareTo(date2) == 0;
   }
 
-  static List<String> sortDates(List<String> dates) {
+  static List<String?> sortDates(List<String> dates) {
     var dateTimes = dates.map((e) => parse(e)).toList();
     dateTimes.sort();
     return dateTimes.map((e) => format(e, FORMAT_AS_DATETIME)).toList();
@@ -75,20 +74,18 @@ class DateUtil {
       return "00";
     }
     final minutes = int.parse(time);
-    final String hours =
-        minutes ~/ 60 > 9 ? (minutes ~/ 60).toString() : "0" + (minutes ~/ 60).toString();
-    final String min =
-        minutes % 60 > 9 ? (minutes % 60).toString() : "0" + (minutes % 60).toString();
+    final String hours = minutes ~/ 60 > 9 ? (minutes ~/ 60).toString() : "0" + (minutes ~/ 60).toString();
+    final String min = minutes % 60 > 9 ? (minutes % 60).toString() : "0" + (minutes % 60).toString();
     return hours + ":" + min;
   }
 
   ///@nullable
-  static DateTime tryParse(String s) {
+  static DateTime? tryParse(String? s) {
     if (s == null || s.isEmpty) return null;
     return parse(s);
   }
 
-  static DateTime parse(String s) {
+  static DateTime? parse(String? s) {
     if (s == null || s.length == 0) return null;
     try {
       switch (s.length) {
@@ -110,12 +107,12 @@ class DateUtil {
   }
 
   ///@nullable
-  static TimeOfDay tryParseTime(String s) {
+  static TimeOfDay? tryParseTime(String? s) {
     if (s == null || s.isEmpty) return null;
     return parseTime(s);
   }
 
-  static TimeOfDay parseTime(String s) {
+  static TimeOfDay? parseTime(String? s) {
     if (s == null || s.length == 0) return null;
     try {
       switch (s.length) {
@@ -135,12 +132,13 @@ class DateUtil {
   }
 
   ///@nullable
-  static String tryFormat(DateTime date, DateFormat fmt) {
-    if (date == null || fmt == null) return null;
+  static String? tryFormat(DateTime? date, DateFormat fmt) {
+    if (date == null) return null;
     return format(date, fmt);
   }
 
-  static String format(DateTime date, DateFormat fmt) {
+  static String? format(DateTime? date, DateFormat fmt) {
+    if (date == null) return null;
     try {
       return fmt.format(date);
     } on FormatException catch (error, st) {
@@ -149,32 +147,31 @@ class DateUtil {
     return null;
   }
 
-  static DateTime formatDateTime(DateTime date, DateFormat fmt) {
-    if (date == null || fmt == null) return null;
-    String stringDate = format(date, fmt);
+  static DateTime? formatDateTime(DateTime? date, DateFormat fmt) {
+    if (date == null) return null;
+    String? stringDate = format(date, fmt);
     if (stringDate?.isNotEmpty == true)
-      return fmt.parse(stringDate);
+      return fmt.parse(stringDate!);
     else
       return null;
   }
 
   ///@nullable
-  static String tryConvert(String s, DateFormat fmt) {
-    if (s == null || s.isEmpty || fmt == null) return null;
+  static String? tryConvert(String? s, DateFormat fmt) {
+    if (s == null || s.isEmpty) return null;
     return convert(s, fmt);
   }
 
-  static String convert(String s, DateFormat fmt) {
+  static String? convert(String? s, DateFormat fmt) {
     return format(parse(s), fmt);
   }
 
-  static String convertToTime(String s, DateFormat fmt) {
+  static String? convertToTime(String? s, DateFormat fmt) {
     try {
       if (s == null || s.length == 0) return null;
       if (s.contains(":")) return s;
       final timeInMillisecond = int.parse(s) * 60 * 1000;
-      final date =
-          DateTime.fromMillisecondsSinceEpoch(today().millisecondsSinceEpoch + timeInMillisecond);
+      final date = DateTime.fromMillisecondsSinceEpoch(today().millisecondsSinceEpoch + timeInMillisecond);
 
       return format(date, fmt);
     } catch (error, st) {
@@ -183,9 +180,9 @@ class DateUtil {
     }
   }
 
-  static String convertMinuteToTimeText(String minute) {
-    if (minute == null || minute.isEmpty) return null;
-    final minuteInt = int.parse(minute);
+  static String? convertMinuteToTimeText(String? minute) {
+    if (minute?.isNotEmpty != true) return null;
+    final minuteInt = int.parse(minute!);
     final h = (minuteInt ~/ 60).toString();
     final m = (minuteInt % 60).toInt().toString();
     if (minuteInt % 60 == 0) {

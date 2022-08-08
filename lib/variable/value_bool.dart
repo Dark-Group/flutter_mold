@@ -3,15 +3,15 @@ import 'package:flutter_mold/variable/error_result.dart';
 import 'package:flutter_mold/variable/text_value.dart';
 
 class ValueBool extends ChangeNotifier implements TextValue {
-  bool _oldValue;
-  bool _value;
-  final bool _mandatory;
+  bool? _oldValue;
+  bool _value = false;
+  final bool? _mandatory;
 
   ValueBool({bool value = false, bool mandatory = false}) : this._mandatory = mandatory {
     this._value = value;
   }
 
-  bool getValue() => this._value;
+  bool? getValue() => this._value;
 
   void setValue(bool newValue) {
     this._value = newValue;
@@ -19,7 +19,7 @@ class ValueBool extends ChangeNotifier implements TextValue {
   }
 
   @override
-  String getText() => this._value ? "1" : "0";
+  String getText() => this._value == true ? "1" : "0";
 
   @override
   void setText(String text) {
@@ -33,7 +33,7 @@ class ValueBool extends ChangeNotifier implements TextValue {
   }
 
   @override
-  bool mandatory() => this._mandatory;
+  bool mandatory() => this._mandatory == true;
 
   @override
   bool modified() => this._oldValue != this._value;

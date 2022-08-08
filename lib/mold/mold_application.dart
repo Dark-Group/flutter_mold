@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 typedef BuildWidget = Widget Function(BuildContext context);
 
 abstract class MoldApplication {
-  MoldApplicationWidget _applicationWidget;
+  MoldApplicationWidget? _applicationWidget;
 
   void _onInit(MoldApplicationWidget applicationWidget) {
     this._applicationWidget = applicationWidget;
@@ -16,7 +16,7 @@ abstract class MoldApplication {
 
   bool isInit() => _applicationWidget != null;
 
-  BuildContext get applicationContext => isInit() ? _applicationWidget.getContext() : null;
+  BuildContext? get applicationContext => isInit() ? _applicationWidget!.getContext() : null;
 
   void onCreate() {
     assert(isInit());
@@ -50,17 +50,19 @@ abstract class MoldApplication {
 }
 
 class MoldApplicationWidget extends StatelessWidget {
-  static MoldApplicationWidget _applicationWidget;
-  BuildContext _context;
+  static MoldApplicationWidget? _applicationWidget;
+  BuildContext? _context;
 
   void _setContext(BuildContext context) {
     _context = context;
   }
 
-  BuildContext getContext() => _context;
+  BuildContext? getContext() => _context;
+
+  BuildContext requiredContext() => getContext()!;
 
   static MoldApplicationWidget getInstance() {
-    return _applicationWidget;
+    return _applicationWidget!;
   }
 
   final MoldApplication application;
@@ -98,8 +100,9 @@ class MoldApplicationWidget extends StatelessWidget {
     }
 
     if (!MoldStyle.instance.isInit) {
-      this
-          .application
+      MoldStyle.instance.initColor();
+
+      application
           .getColor()
           .then((appColor) => MoldStyle.instance.initColor(color: appColor))
           .then((_) => this.application.getTheme())
@@ -109,7 +112,7 @@ class MoldApplicationWidget extends StatelessWidget {
 
     this.runReloadScreen();
 
-    return new StreamBuilder<bool>(
+    return new StreamBuilder<bool?>(
         stream: reloadScreen.stream,
         initialData: reloadScreen.value,
         builder: (_, st) {

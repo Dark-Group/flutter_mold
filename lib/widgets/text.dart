@@ -8,19 +8,19 @@ class MyText extends MyWidget {
 
   MyText(
     String text, {
-    bool upperCase,
-    bool lowerCase,
-    bool singleLine,
-    TextStyle style,
-    TextAlign textAlign,
-    TextOverflow textOverflow,
-    int maxLines,
-    EdgeInsetsGeometry padding,
-    OnTapListener onTap,
-    BorderRadius tapEffectRadius,
-    Alignment alignment,
-    int flex,
-    Stream<String> textStream,
+    bool? upperCase,
+    bool? lowerCase,
+    bool? singleLine,
+    TextStyle? style,
+    TextAlign? textAlign,
+    TextOverflow? textOverflow,
+    int? maxLines,
+    EdgeInsetsGeometry? padding,
+    OnTapListener? onTap,
+    BorderRadius? tapEffectRadius,
+    Alignment? alignment,
+    int? flex,
+    Stream<String>? textStream,
   }) {
     block.text = text;
     block.upperCase = upperCase;
@@ -38,9 +38,7 @@ class MyText extends MyWidget {
 
     if (textStream != null) {
       textStream.listen((newText) {
-        if (newText != null) {
-          block.text = newText;
-        }
+        block.text = newText;
       });
     }
   }

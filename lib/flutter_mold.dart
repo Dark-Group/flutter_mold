@@ -13,7 +13,6 @@ export 'common/util.dart';
 export 'localization/app_lang.dart';
 export 'localization/pref.dart';
 export 'log/logger.dart';
-export 'mold/fragment.dart';
 export 'mold/mold.dart';
 export 'mold/mold_application.dart';
 export 'mold/mold_navigation_history_observer.dart';

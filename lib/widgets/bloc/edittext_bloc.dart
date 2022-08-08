@@ -4,33 +4,33 @@ class GEditTextBloc extends ChangeNotifier {
   //------------------------------------------------------------------------------------------------
   // width
   //------------------------------------------------------------------------------------------------
-  double _width;
+  double? _width;
 
-  set width(double newValue) {
+  set width(double? newValue) {
     _width = newValue;
     notifyListeners();
   }
 
-  double get width => this._width;
+  double? get width => this._width;
 
   //------------------------------------------------------------------------------------------------
   // height
   //------------------------------------------------------------------------------------------------
-  double _height;
+  double? _height;
 
-  set height(double newValue) {
+  set height(double? newValue) {
     _height = newValue;
     notifyListeners();
   }
 
-  double get height => this._height;
+  double? get height => this._height;
 
   //------------------------------------------------------------------------------------------------
   // String value
   //------------------------------------------------------------------------------------------------
-  String _text;
+  String? _text;
 
-  set text(String newValue) {
+  set text(String? newValue) {
     _text = newValue;
     notifyListeners();
   }
@@ -40,9 +40,9 @@ class GEditTextBloc extends ChangeNotifier {
   //------------------------------------------------------------------------------------------------
   // Text style
   //------------------------------------------------------------------------------------------------
-  TextStyle _style;
+  TextStyle? _style;
 
-  set style(TextStyle newValue) {
+  set style(TextStyle? newValue) {
     _style = newValue;
     notifyListeners();
   }
@@ -52,28 +52,26 @@ class GEditTextBloc extends ChangeNotifier {
   //------------------------------------------------------------------------------------------------
   // input decorator
   //------------------------------------------------------------------------------------------------
-  InputDecoration _decoration;
+  InputDecoration? _decoration;
 
-  set decoration(InputDecoration newValue) {
+  set decoration(InputDecoration? newValue) {
     _decoration = newValue;
     notifyListeners();
   }
 
-  InputDecoration get decoration => _decoration;
+  InputDecoration? get decoration => _decoration;
 
   //------------------------------------------------------------------------------------------------
   // Text obscure text for password input type
   //------------------------------------------------------------------------------------------------
-  bool _enableObscure;
+  bool? _enableObscure;
 
-  set enableObscure(bool newValue) {
+  set enableObscure(bool? newValue) {
     _enableObscure = newValue;
     notifyListeners();
   }
 
-  bool get enableObscure =>
-      this.keyboardType == TextInputType.visiblePassword &&
-          (_enableObscure ?? false);
+  bool get enableObscure => this.keyboardType == TextInputType.visiblePassword && (_enableObscure ?? false);
 
   void switchObscure() {
     enableObscure = !enableObscure;
@@ -82,9 +80,9 @@ class GEditTextBloc extends ChangeNotifier {
   //------------------------------------------------------------------------------------------------
   // hint value
   //------------------------------------------------------------------------------------------------
-  String _hintText;
+  String? _hintText;
 
-  set hintText(String newValue) {
+  set hintText(String? newValue) {
     _hintText = newValue;
     notifyListeners();
   }
@@ -94,9 +92,9 @@ class GEditTextBloc extends ChangeNotifier {
   //------------------------------------------------------------------------------------------------
   // hint style
   //------------------------------------------------------------------------------------------------
-  TextStyle _hintStyle;
+  TextStyle? _hintStyle;
 
-  set hintStyle(TextStyle newValue) {
+  set hintStyle(TextStyle? newValue) {
     _hintStyle = newValue;
     notifyListeners();
   }
@@ -106,9 +104,9 @@ class GEditTextBloc extends ChangeNotifier {
   //------------------------------------------------------------------------------------------------
   // Keyboard input type
   //------------------------------------------------------------------------------------------------
-  TextInputType _keyboardType;
+  TextInputType? _keyboardType;
 
-  set keyboardType(TextInputType newValue) {
+  set keyboardType(TextInputType? newValue) {
     _keyboardType = newValue;
     _enableObscure = keyboardType == TextInputType.visiblePassword;
     notifyListeners();
@@ -119,7 +117,7 @@ class GEditTextBloc extends ChangeNotifier {
   //------------------------------------------------------------------------------------------------
   // Text style
   //------------------------------------------------------------------------------------------------
-  TextAlign _textAlign;
+  TextAlign? _textAlign;
 
   set textAlign(TextAlign newValue) {
     _textAlign = newValue;
@@ -131,109 +129,108 @@ class GEditTextBloc extends ChangeNotifier {
   //------------------------------------------------------------------------------------------------
   // Text style
   //------------------------------------------------------------------------------------------------
-  TextAlignVertical _textAlignVertical;
+  TextAlignVertical? _textAlignVertical;
 
-  set textAlignVertical(TextAlignVertical newValue) {
+  set textAlignVertical(TextAlignVertical? newValue) {
     _textAlignVertical = newValue;
     notifyListeners();
   }
 
-  TextAlignVertical get textAlignVertical => _textAlignVertical;
+  TextAlignVertical? get textAlignVertical => _textAlignVertical;
 
   //------------------------------------------------------------------------------------------------
   // Text max lines
   //------------------------------------------------------------------------------------------------
-  int _maxLines;
+  int? _maxLines;
 
-  set maxLines(int newValue) {
+  set maxLines(int? newValue) {
     _maxLines = newValue;
     notifyListeners();
   }
 
-  int get maxLines => _maxLines;
+  int? get maxLines => _maxLines;
 
   //------------------------------------------------------------------------------------------------
   // prefix icon
   //------------------------------------------------------------------------------------------------
-  Widget _prefixIcon;
+  Widget? _prefixIcon;
 
-  set prefixIcon(Widget newValue) {
+  set prefixIcon(Widget? newValue) {
     _prefixIcon = newValue;
     notifyListeners();
   }
 
-  Widget get prefixIcon => _prefixIcon;
+  Widget? get prefixIcon => _prefixIcon;
 
   //------------------------------------------------------------------------------------------------
   // suffix icon
   //------------------------------------------------------------------------------------------------
-  Widget _suffixIcon;
+  Widget? _suffixIcon;
 
-  set suffixIcon(Widget newValue) {
+  set suffixIcon(Widget? newValue) {
     _suffixIcon = newValue;
     notifyListeners();
   }
 
-  Widget get suffixIcon => _suffixIcon;
+  Widget? get suffixIcon => _suffixIcon;
 
   //------------------------------------------------------------------------------------------------
   // input text validator
   //------------------------------------------------------------------------------------------------
-  FormFieldValidator<String> _validator;
+  FormFieldValidator<String>? _validator;
 
-  set validator(FormFieldValidator<String> newValue) {
+  set validator(FormFieldValidator<String>? newValue) {
     _validator = newValue;
     notifyListeners();
   }
 
-  FormFieldValidator<String> get validator => _validator;
+  FormFieldValidator<String>? get validator => _validator;
 
   //------------------------------------------------------------------------------------------------
   // controler
   //------------------------------------------------------------------------------------------------
-  TextEditingController _controller;
+  TextEditingController? _controller;
 
-  set controller(TextEditingController newValue) {
+  set controller(TextEditingController? newValue) {
     _controller = newValue;
     notifyListeners();
   }
 
-  TextEditingController get controller =>
-      _controller ?? TextEditingController(text: this.text);
+  TextEditingController? get controller => _controller ?? TextEditingController(text: this.text);
 
   //------------------------------------------------------------------------------------------------
   // Padding
   //------------------------------------------------------------------------------------------------
-  EdgeInsetsGeometry _padding;
+  EdgeInsetsGeometry? _padding;
 
-  set padding(EdgeInsetsGeometry newValue) {
+  set padding(EdgeInsetsGeometry? newValue) {
     _padding = newValue;
     notifyListeners();
   }
 
-  EdgeInsetsGeometry get padding => _padding;
+  EdgeInsetsGeometry? get padding => _padding;
 
   //------------------------------------------------------------------------------------------------
   // View Alignment
   //------------------------------------------------------------------------------------------------
-  Alignment _alignment;
+  Alignment? _alignment;
 
-  set alignment(Alignment newValue) {
+  set alignment(Alignment? newValue) {
     _alignment = newValue;
     notifyListeners();
   }
 
-  Alignment get alignment => _alignment;
+  Alignment? get alignment => _alignment;
 
   //------------------------------------------------------------------------------------------------
   // Expanded
   //------------------------------------------------------------------------------------------------
-  int _flex;
+  int? _flex;
 
-  set flex(int newValue) {
+  set flex(int? newValue) {
     _flex = newValue;
     notifyListeners();
   }
 
-  int get flex => _flex;
+  int? get flex => _flex;
 }

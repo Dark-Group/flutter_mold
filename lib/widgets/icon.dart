@@ -3,15 +3,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 // ignore: must_be_immutable
 class MyIcon extends StatelessWidget {
-  factory MyIcon.icon(IconData icon,
-      {double size,
-      int flex,
-      Color color,
-      EdgeInsetsGeometry padding,
-      EdgeInsetsGeometry margin,
-      Alignment alignment,
-      bool visible,
-      VoidCallback onTap}) {
+  factory MyIcon.icon(
+    IconData icon, {
+    double? size,
+    int? flex,
+    Color? color,
+    EdgeInsetsGeometry? padding,
+    EdgeInsetsGeometry? margin,
+    Alignment? alignment,
+    bool visible = true,
+    VoidCallback? onTap,
+  }) {
     return MyIcon(
       icon: icon,
       size: size,
@@ -24,15 +26,17 @@ class MyIcon extends StatelessWidget {
     );
   }
 
-  factory MyIcon.svg(String svg,
-      {double size,
-      int flex,
-      Color color,
-      EdgeInsetsGeometry padding,
-      EdgeInsetsGeometry margin,
-      Alignment alignment,
-      bool visible = true,
-      VoidCallback onTap}) {
+  factory MyIcon.svg(
+    String svg, {
+    double? size,
+    int? flex,
+    Color? color,
+    EdgeInsetsGeometry? padding,
+    EdgeInsetsGeometry? margin,
+    Alignment? alignment,
+    bool visible = true,
+    VoidCallback? onTap,
+  }) {
     return MyIcon(
       svg: svg,
       size: size,
@@ -46,32 +50,33 @@ class MyIcon extends StatelessWidget {
     );
   }
 
-  IconData _icon;
-  String _svg;
-  double _size;
-  int _flex;
+  IconData? _icon;
+  String? _svg;
+  double? _size;
+  int? _flex;
 
-  Color _color;
+  Color? _color;
 
-  EdgeInsetsGeometry _padding;
-  EdgeInsetsGeometry _margin;
-  Alignment _alignment;
+  EdgeInsetsGeometry? _padding;
+  EdgeInsetsGeometry? _margin;
+  Alignment? _alignment;
 
-  bool _visible;
+  bool? _visible;
 
-  VoidCallback _onTap;
+  VoidCallback? _onTap;
 
-  MyIcon(
-      {IconData icon,
-      String svg,
-      double size,
-      int flex,
-      Color color,
-      EdgeInsetsGeometry padding,
-      EdgeInsetsGeometry margin,
-      Alignment alignment,
-      bool visible = true,
-      VoidCallback onTap}) {
+  MyIcon({
+    IconData? icon,
+    String? svg,
+    double? size,
+    int? flex,
+    Color? color,
+    EdgeInsetsGeometry? padding,
+    EdgeInsetsGeometry? margin,
+    Alignment? alignment,
+    bool visible = true,
+    VoidCallback? onTap,
+  }) {
     this._icon = icon;
     this._svg = svg;
     this._size = size;
@@ -86,15 +91,19 @@ class MyIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget widget = null;
+    Widget? widget;
     if (_icon != null) {
       widget = Icon(_icon, size: _size, color: _color);
     } else if (_svg != null) {
-      widget = SvgPicture.asset(_svg, color: _color, width: _size, height: _size);
+      widget = SvgPicture.asset(_svg!, color: _color, width: _size, height: _size);
+    }
+
+    if (widget == null) {
+      throw Exception("IconData or Svg is required!");
     }
 
     if (_padding != null) {
-      widget = Padding(child: widget, padding: _padding);
+      widget = Padding(child: widget, padding: _padding!);
     }
 
     if (_onTap != null) {
@@ -110,19 +119,19 @@ class MyIcon extends StatelessWidget {
     }
 
     if (_margin != null) {
-      widget = Padding(child: widget, padding: _margin);
+      widget = Padding(child: widget, padding: _margin!);
     }
 
     if (_alignment != null) {
-      widget = Align(child: widget, alignment: _alignment);
+      widget = Align(child: widget, alignment: _alignment!);
     }
 
     if (_flex != null) {
-      widget = Expanded(child: widget, flex: _flex);
+      widget = Expanded(child: widget, flex: _flex!);
     }
 
-    if (_visible != null && !_visible) {
-      widget = Visibility(child: widget, visible: _visible);
+    if (_visible != null && _visible != true) {
+      widget = Visibility(child: widget, visible: _visible!);
     }
 
     return widget;

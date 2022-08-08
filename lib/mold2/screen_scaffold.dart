@@ -25,7 +25,7 @@ abstract class ScaffoldScreen extends Screen {
 
   @override
   Widget onCreateWidget(BuildContext _) {
-    BuildContext ctx = getContext();
+    BuildContext ctx = requiredContext();
     return ChangeNotifierProvider<_Bloc>.value(
       value: _bloc,
       child: new Consumer<_Bloc>(builder: (_, model, child) {
@@ -41,21 +41,21 @@ abstract class ScaffoldScreen extends Screen {
 }
 
 class _Bloc extends ChangeNotifier {
-  Color _backgroundColor;
+  Color? _backgroundColor;
 
   set backgroundColor(Color newValue) {
     this._backgroundColor = newValue;
     super.notifyListeners();
   }
 
-  PreferredSizeWidget _appBar;
+  PreferredSizeWidget? _appBar;
 
-  set appBar(Widget newValue) {
+  set appBar(PreferredSizeWidget newValue) {
     this._appBar = newValue;
     super.notifyListeners();
   }
 
-  Widget _floatActionButton;
+  Widget? _floatActionButton;
 
   set floatActionButton(Widget newValue) {
     this._floatActionButton = newValue;

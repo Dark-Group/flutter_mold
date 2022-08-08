@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_mold/common/extensions.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:rxdart/rxdart.dart';
 
 void main() {
   group("test addSafety function inside of BehaviorSubject", () {
-    test("test addSafety function with null object", () {
-      expect(() => null.addSafety("1"), throwsA(isA()));
-    });
     test("test add new item closed BehaviorSubject", () {
       BehaviorSubject<int> b = BehaviorSubject.seeded(1);
       expect(b.value, equals(1));
@@ -21,14 +18,11 @@ void main() {
       expect(b.value, equals(1));
       b.addSafety(2);
       expect(b.value, equals(2));
+      b.close();
     });
   });
 
   group("test ByteToTextSize extensions", () {
-    test("test toByteSize function with null object", () {
-      expect(() => null.toByteSize(), throwsA(isA()));
-    });
-
     test("test byByteSize", () {
       expect(12565.byByteSize, equals(12565));
     });
@@ -63,10 +57,6 @@ void main() {
   });
 
   group("test Iterables extensions", () {
-    test("test groupBy function with null object", () {
-      expect(() => null.groupBy<dynamic>((e) => null), throwsA(isA()));
-    });
-
     test("test groupBy function with empty list", () {
       expect(<String>[].groupBy<String>((e) => e), equals({}));
     });
@@ -155,10 +145,6 @@ void main() {
       expect("2".takeUnless((e) => false), equals("2"));
     });
 
-    test("test fromHex function with null object", () {
-      expect(() => null.fromHex(), throwsA(isA()));
-    });
-
     test("test fromHex function with empty String", () {
       expect(() => "".fromHex(), throwsA(isA()));
     });
@@ -183,10 +169,6 @@ void main() {
       expect("#FFFFFF".fromHex(), Colors.white);
     });
 
-    test("test toPhoneFormat function with null Object", () {
-      expect(() => null.toPhoneFormat(), throwsA(isA()));
-    });
-
     test("test toPhoneFormat function with empty String", () {
       expect("".toPhoneFormat(), "");
     });
@@ -197,11 +179,6 @@ void main() {
   });
 
   group("test ListExtensions extensions", () {
-    test("test mapNotNullTo function with null object", () {
-      expect(() => null.mapNotNullTo<dynamic, List<dynamic>>(<dynamic>[], (e) => null),
-          throwsA(isA()));
-    });
-
     test("test mapNotNullTo function with empty list", () {
       expect(<String>[].mapNotNullTo<dynamic, List<dynamic>>(<dynamic>[], (e) => null), equals([]));
     });
@@ -214,13 +191,8 @@ void main() {
 
     test("test mapNotNullTo function with null object ", () {
       final list = <String>[];
-      <int>[1, 2, 3, null]
-          .mapNotNullTo<String, List<String>>(list, (intItem) => intItem?.toString());
+      <int?>[1, 2, 3, null].mapNotNullTo<String, List<String>>(list, (intItem) => intItem?.toString());
       expect(list, equals(["1", "2", "3"]));
-    });
-
-    test("test mapNotNull function with null object", () {
-      expect(() => null.mapNotNull<dynamic>((e) => null), throwsA(isA()));
     });
 
     test("test mapNotNull function with empty list", () {
@@ -228,17 +200,11 @@ void main() {
     });
 
     test("test mapNotNull function", () {
-      expect(<int>[1, 2, 3].mapNotNull<String>((intItem) => intItem.toString()),
-          equals(["1", "2", "3"]));
+      expect(<int>[1, 2, 3].mapNotNull<String>((intItem) => intItem.toString()), equals(["1", "2", "3"]));
     });
 
     test("test mapNotNull function with null object", () {
-      expect(<int>[1, 2, 3, null].mapNotNull<String>((intItem) => intItem?.toString()),
-          equals(["1", "2", "3"]));
-    });
-
-    test("test mapList function with null object", () {
-      expect(() => null.mapList<dynamic>((e) => null), throwsA(isA()));
+      expect(<int?>[1, 2, 3, null].mapNotNull<String>((intItem) => intItem?.toString()), equals(["1", "2", "3"]));
     });
 
     test("test mapList function with empty list", () {
@@ -246,21 +212,15 @@ void main() {
     });
 
     test("test mapList function", () {
-      expect(
-          <int>[1, 2, 3].mapList<String>((intItem) => intItem.toString()), equals(["1", "2", "3"]));
+      expect(<int>[1, 2, 3].mapList<String>((intItem) => intItem.toString()), equals(["1", "2", "3"]));
     });
 
     test("test mapList function", () {
-      expect(<int>[1, 2, 3, null].mapList<String>((intItem) => intItem?.toString()),
-          equals(["1", "2", "3", null]));
-    });
-
-    test("test whereNotNull function with null object", () {
-      expect(() => null.whereNotNull((e) => null), throwsA(isA()));
+      expect(<int?>[1, 2, 3, null].mapList<String>((intItem) => intItem?.toString()), equals(["1", "2", "3", null]));
     });
 
     test("test whereNotNull function with empty list", () {
-      expect(<String>[].whereNotNull((e) => null), equals([]));
+      expect(<String>[].whereNotNull((e) => false), equals([]));
     });
 
     test("test whereNotNull function with true predicate", () {
@@ -284,15 +244,11 @@ void main() {
     });
 
     test("test whereNotNull function with predicate  and null item", () {
-      expect([1, 2, 3, null].whereNotNull((intItem) => intItem % 2 == 0), equals(<int>[2]));
-    });
-
-    test("test whereNot function with null object", () {
-      expect(() => null.whereNot((e) => null), throwsA(isA()));
+      expect([1, 2, 3, null].whereNotNull((intItem) => intItem != null && intItem % 2 == 0), equals(<int>[2]));
     });
 
     test("test whereNot function with empty list", () {
-      expect(<String>[].whereNot((e) => null), equals([]));
+      expect(<String>[].whereNot((e) => false), equals([]));
     });
 
     test("test whereNot function with true predicate", () {
@@ -308,11 +264,7 @@ void main() {
     });
 
     test("test whereNot function with predicate  and null item", () {
-      expect(() => [1, 2, 3, null].whereNot((e) => e % 2 == 0), throwsA(isA()));
-    });
-
-    test("test firstWhereOrNull function with null object", () {
-      expect(() => null.firstWhereOrNull((e) => null), throwsA(isA()));
+      expect(() => [1, 2, 3, null].whereNot((e) => e != null && e % 2 == 0), throwsA(isA()));
     });
 
     test("test firstWhereOrNull function with empty list and false predicate", () {
@@ -336,11 +288,7 @@ void main() {
     });
 
     test("test firstWhereOrNull function with predicate  and null item", () {
-      expect(() => [null, 1, 2, 3].firstWhereOrNull((e) => e % 2 == 0), throwsA(isA()));
-    });
-    //-
-    test("test lastWhereOrNull function with null object", () {
-      expect(() => null.lastWhereOrNull((e) => null), throwsA(isA()));
+      expect(() => [null, 1, 2, 3].firstWhereOrNull((e) => e != null && e % 2 == 0), throwsA(isA()));
     });
 
     test("test lastWhereOrNull function with empty list and false predicate", () {
@@ -364,11 +312,11 @@ void main() {
     });
 
     test("test lastWhereOrNull function with predicate  and null item", () {
-      expect([null, 1, 2, 3].lastWhereOrNull((e) => e % 2 == 0), equals(2));
+      expect([null, 1, 2, 3].lastWhereOrNull((e) => e != null && e % 2 == 0), equals(2));
     });
 
     test("test lastWhereOrNull function with predicate  and null item", () {
-      expect(() => [1, 2, 3, null].lastWhereOrNull((e) => e % 2 == 0), throwsA(isA()));
+      expect(() => [1, 2, 3, null].lastWhereOrNull((e) => e != null && e % 2 == 0), throwsA(isA()));
     });
   });
 }
