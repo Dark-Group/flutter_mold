@@ -8,7 +8,7 @@ class ValueInt extends ChangeNotifier implements TextValue {
   final ValueString _value;
   final bool _mandatory;
 
-  ValueInt({@required int size, String text, int number, bool mandatory = false}) //
+  ValueInt({required int size, String? text, int? number, bool mandatory = false}) //
       : this._value = ValueString(size: size, mandatory: false),
         this._mandatory = mandatory {
     if (text != null) {
@@ -20,24 +20,23 @@ class ValueInt extends ChangeNotifier implements TextValue {
     }
   }
 
-  int getValue() {
+  int? getValue() {
     String r = this._value.getValue();
-    if (r == null || r.isEmpty) {
-      return null;
+    if (r.isNotEmpty == true) {
+      return int.tryParse(r);
     }
-    return int.tryParse(r);
+    return null;
   }
 
   bool isZero() {
-    int number = getValue();
-    return number == 0;
+    return 0 == getValue();
   }
 
   bool isZeroOrNull() {
     return getValue() == null || isZero();
   }
 
-  void setValue(int newValue) {
+  void setValue(int? newValue) {
     if (newValue == null) {
       this._value.setValue(null);
     } else {
@@ -79,12 +78,12 @@ class ValueInt extends ChangeNotifier implements TextValue {
 
     try {
       String q = this._value.getValue();
-      if (q != null && q.isNotEmpty) {
+      if (q.isNotEmpty == true) {
         int.parse(q);
       }
     } catch (ex, st) {
       Log.error(ex, st);
-      return ErrorResult.makeWithException(ex);
+      return ErrorResult.makeWithException(ex as Exception);
     }
 
     if (this.mandatory() && this.isEmpty()) {

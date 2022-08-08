@@ -3,14 +3,14 @@ import 'dart:ui';
 
 import 'package:crypto/crypto.dart';
 
-E nvl<E>(E value, [E defaultValue]) {
+E nvl<E>(E? value, E defaultValue) {
   return value == null ? defaultValue : value;
 }
 
 /// nvlTryInt function
-int nvlTryInt(Object value) {
+int? nvlTryInt(Object value) {
   if (value is String)
-    return value?.isNotEmpty == true ? int.tryParse(value) : null;
+    return value.isNotEmpty == true ? int.tryParse(value) : null;
   else if (value is int)
     return value;
   else
@@ -20,7 +20,7 @@ int nvlTryInt(Object value) {
 /// nvlTryInt function
 int nvlTryIntByZero(Object value) {
   if (value is String)
-    return value?.isNotEmpty == true ? int.tryParse(value) ?? 0 : 0;
+    return value.isNotEmpty == true ? int.tryParse(value) ?? 0 : 0;
   else if (value is int)
     return value;
   else
@@ -30,7 +30,7 @@ int nvlTryIntByZero(Object value) {
 /// nvlTryInt function
 num nvlTryNumByZero(Object value) {
   if (value is String)
-    return value?.isNotEmpty == true ? num.tryParse(value) ?? 0 : 0;
+    return value.isNotEmpty == true ? num.tryParse(value) ?? 0 : 0;
   else if (value is num)
     return value;
   else if (value is int)
@@ -42,9 +42,9 @@ num nvlTryNumByZero(Object value) {
 }
 
 /// nvlTryNum function
-num nvlTryNum(Object value) {
+num? nvlTryNum(Object value) {
   if (value is String)
-    return value?.isNotEmpty == true ? num.tryParse(value) : null;
+    return value.isNotEmpty == true ? num.tryParse(value) : null;
   else if (value is num)
     return value;
   else if (value is int)
@@ -55,20 +55,20 @@ num nvlTryNum(Object value) {
     return null;
 }
 
-double nvlTryDouble(Object value) {
+double? nvlTryDouble(Object value) {
   if (value is String)
-    return value?.isNotEmpty == true ? double.tryParse(value) : null;
+    return value.isNotEmpty == true ? double.tryParse(value) : null;
   else if (value is double)
     return value;
   else
     return null;
 }
 
-int nvlInt(int value, [int defaultValue = 0]) {
+int nvlInt(int? value, [int defaultValue = 0]) {
   return value == null ? defaultValue : value;
 }
 
-String nvlString(String value, [String defaultValue]) {
+String nvlString(String? value, [String? defaultValue]) {
   return value == null ? defaultValue ?? "" : value;
 }
 
@@ -78,33 +78,33 @@ String calcSha256(String text) {
 }
 
 class Util {
-  static dynamic get(Map<String, dynamic> data, String key, {dynamic defaultValue}) {
-    final result = data?.containsKey(key) == true ? data[key] : defaultValue;
+  static dynamic get(Map<String, dynamic>? data, String key, {dynamic defaultValue}) {
+    final result = data != null && data.containsKey(key) == true ? data[key] : defaultValue;
     if (result == null) {
       return defaultValue;
     }
     return result;
   }
 
-  static String getString(Map<String, dynamic> data, String key, {String defaultValue}) {
+  static String getString(Map<String, dynamic> data, String key, {String? defaultValue}) {
     return get(data, key, defaultValue: defaultValue);
   }
 
-  static int getInt(Map<String, dynamic> data, String key, {int defaultValue}) {
+  static int getInt(Map<String, dynamic> data, String key, {int? defaultValue}) {
     return get(data, key, defaultValue: defaultValue);
   }
 
-  static String fazoGet(List<String> p, List<dynamic> data, String key) {
-    if (data.isEmpty || p.isEmpty || key == null || (key != null && key.isEmpty)) return null;
+  static String? fazoGet(List<String> p, List<dynamic> data, String key) {
+    if (data.isEmpty || p.isEmpty || key.isEmpty) return null;
     final int index = p.indexOf(key);
     if (index < 0) return null;
     if (data.length - 1 < index) return null;
     return data[index];
   }
 
-  static bool nonEmpty(String value) => !isEmpty(value);
+  static bool nonEmpty(String? value) => !isEmpty(value);
 
-  static bool isEmpty(String value) => value == null || value.length == 0;
+  static bool isEmpty(String? value) => value == null || value.length == 0;
 
   static Color fromHex(String hexString) {
     final buffer = StringBuffer();

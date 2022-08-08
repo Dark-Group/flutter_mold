@@ -1,37 +1,34 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mold/localization/app_lang.dart';
 import 'package:flutter_mold/widgets/bloc/edittext_bloc.dart';
 import 'package:flutter_mold/widgets/widget.dart';
 import 'package:provider/provider.dart';
 
 class GEditText extends MyWidget {
-  static String t(String key) => "gwslib:edittext:$key".translate();
-
   final GEditTextBloc block = new GEditTextBloc();
-  final bool enable;
-  final Color fillColor;
+  final bool? enable;
+  final Color? fillColor;
 
   GEditText({
-    double width,
-    double height,
-    String text,
-    TextStyle style,
-    bool enableObscure,
-    InputDecoration decoration,
-    String hintText,
-    TextStyle hintStyle,
+    double? width,
+    double? height,
+    String? text,
+    TextStyle? style,
+    bool? enableObscure,
+    InputDecoration? decoration,
+    String? hintText,
+    TextStyle? hintStyle,
     TextInputType keyboardType = TextInputType.text,
     TextAlign textAlign = TextAlign.left,
     TextAlignVertical textAlignVertical = TextAlignVertical.center,
-    int maxLines,
-    Widget prefixIcon,
-    Widget suffixIcon,
-    FormFieldValidator<String> validator,
-    TextEditingController controller,
-    EdgeInsetsGeometry padding,
-    Alignment alignment,
-    int flex,
+    int? maxLines,
+    Widget? prefixIcon,
+    Widget? suffixIcon,
+    FormFieldValidator<String>? validator,
+    TextEditingController? controller,
+    EdgeInsetsGeometry? padding,
+    Alignment? alignment,
+    int? flex,
     this.enable = true,
     this.fillColor,
   }) {
@@ -103,7 +100,7 @@ class GEditText extends MyWidget {
   }
 
   InputDecoration getDecorator(GEditTextBloc bloc) {
-    Widget suffixIcon = this.block.suffixIcon;
+    Widget? suffixIcon = this.block.suffixIcon;
     if (this.block.keyboardType == TextInputType.visiblePassword) {
       suffixIcon = IconButton(
         icon: Icon(block.enableObscure ? Icons.remove_red_eye_rounded : Icons.remove_red_eye_outlined),
@@ -129,9 +126,9 @@ class GEditText extends MyWidget {
       contentPadding: EdgeInsets.symmetric(horizontal: 16),
       prefixIcon: this.block.prefixIcon,
       suffixIcon: suffixIcon,
-      enabled: this.enable,
+      enabled: this.enable ?? true,
       fillColor: this.fillColor,
-      filled: this.fillColor!=null,
+      filled: this.fillColor != null,
     );
   }
 }

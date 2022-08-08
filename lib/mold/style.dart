@@ -15,17 +15,17 @@ class MoldStyle {
 
   MoldStyle._();
 
-  MoldTheme _theme;
+  MoldTheme _theme = MoldTheme();
 
   MoldTheme get theme => _theme;
 
-  MoldColor _color;
+  MoldColor _color = MoldColor();
 
   MoldColor get color => _color;
 
   bool get isInit => _theme != null && _color != null;
 
-  MoldStyle initColor({MoldColor color, bool notify = false}) {
+  MoldStyle initColor({MoldColor? color, bool notify = false}) {
     instance._color = color ?? MoldColor();
     if (notify) {
       App.notify();
@@ -33,7 +33,7 @@ class MoldStyle {
     return instance;
   }
 
-  MoldStyle initTheme({MoldTheme theme, bool notify = false}) {
+  MoldStyle initTheme({MoldTheme? theme, bool notify = false}) {
     instance._theme = theme ?? MoldTheme();
     if (notify) {
       App.notify();

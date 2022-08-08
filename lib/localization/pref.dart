@@ -11,7 +11,7 @@ class LocalizationPref {
 
   //------------------------------------------------------------------------------------------------
 
-  static Future<String> getLanguage() {
+  static Future<String?> getLanguage() {
     return Pref.load(MODULE, APP_LANGUAGE);
   }
 

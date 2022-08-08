@@ -6,20 +6,20 @@ import 'package:flutter_mold/widgets/widget.dart';
 class GButton extends MyWidget {
   final String text;
 
-  double width;
-  double height;
+  double? width;
+  double? height;
 
-  Color backgroundColor;
+  Color? backgroundColor;
 
-  BorderRadius borderRadius;
+  BorderRadius? borderRadius;
 
-  EdgeInsetsGeometry margin;
-  EdgeInsetsGeometry padding;
-  TextAlign textAlign;
-  bool upperCase;
+  EdgeInsetsGeometry? margin;
+  EdgeInsetsGeometry? padding;
+  TextAlign? textAlign;
+  bool? upperCase;
 
-  Color textColor;
-  double fontSize;
+  Color? textColor;
+  double? fontSize;
 
   final OnTapListener onTap;
 
@@ -33,7 +33,7 @@ class GButton extends MyWidget {
       this.textAlign,
       this.textColor,
       this.upperCase,
-      this.onTap,
+      required this.onTap,
       this.fontSize});
 
   @override

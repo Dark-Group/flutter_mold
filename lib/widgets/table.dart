@@ -21,19 +21,19 @@ class MyTable extends MyWidget {
 
   factory MyTable.vertical(
     List<Widget> children, {
-    double width,
-    double height,
-    int flex,
-    VoidCallback onTapCallback,
+    double? width,
+    double? height,
+    int? flex,
+    VoidCallback? onTapCallback,
     BorderRadius borderRadius = BorderRadius.zero,
-    Color borderColor,
+    Color? borderColor,
     double elevation = 0.0,
-    EdgeInsetsGeometry margin,
-    EdgeInsetsGeometry padding,
+    EdgeInsetsGeometry? margin,
+    EdgeInsetsGeometry? padding,
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
     MainAxisSize mainAxisSize = MainAxisSize.min,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
-    Color background,
+    Color? background,
     Color elevationColor = Colors.black26,
     bool wrap = false,
   }) {
@@ -60,19 +60,19 @@ class MyTable extends MyWidget {
 
   factory MyTable.horizontal(
     List<Widget> children, {
-    double width,
-    double height,
-    int flex,
-    VoidCallback onTapCallback,
-    BorderRadius borderRadius = BorderRadius.zero,
-    Color borderColor,
+    double? width,
+    double? height,
+    int? flex,
+    VoidCallback? onTapCallback,
+    BorderRadius? borderRadius,
+    Color? borderColor,
     double elevation = 0.0,
-    EdgeInsetsGeometry margin,
-    EdgeInsetsGeometry padding,
+    EdgeInsetsGeometry? margin,
+    EdgeInsetsGeometry? padding,
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
     MainAxisSize mainAxisSize = MainAxisSize.min,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
-    Color background,
+    Color? background,
     Color elevationColor = Colors.black26,
     bool wrap = false,
   }) {
@@ -100,19 +100,19 @@ class MyTable extends MyWidget {
   factory MyTable.gridCount(
     int crossAxisCount,
     List<Widget> children, {
-    double width,
-    double height,
-    int flex,
-    VoidCallback onTapCallback,
+    double? width,
+    double? height,
+    int? flex,
+    VoidCallback? onTapCallback,
     BorderRadius borderRadius = BorderRadius.zero,
-    Color borderColor,
+    Color? borderColor,
     double elevation = 0.0,
-    EdgeInsetsGeometry margin,
-    EdgeInsetsGeometry padding,
+    EdgeInsetsGeometry? margin,
+    EdgeInsetsGeometry? padding,
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
     MainAxisSize mainAxisSize = MainAxisSize.min,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
-    Color background,
+    Color? background,
     Color elevationColor = Colors.black26,
     bool wrap = false,
   }) {
@@ -138,49 +138,49 @@ class MyTable extends MyWidget {
     );
   }
 
-  double _width;
-  double _height;
-  int _flex;
-  bool _wrap;
+  double? _width;
+  double? _height;
+  int? _flex;
+  bool? _wrap;
 
-  VoidCallback _onTapCallback;
+  VoidCallback? _onTapCallback;
 
-  BorderRadius _borderRadius;
-  Color _borderColor;
-  double _elevation;
+  BorderRadius? _borderRadius;
+  Color? _borderColor;
+  double? _elevation;
 
-  EdgeInsetsGeometry _margin;
-  EdgeInsetsGeometry _padding;
+  EdgeInsetsGeometry? _margin;
+  EdgeInsetsGeometry? _padding;
 
-  List<Widget> _children;
-  ViewType _orientation;
-  int _crossAxisCount;
+  List<Widget> _children = [];
+  ViewType? _orientation;
+  int? _crossAxisCount;
 
-  MainAxisAlignment _mainAxisAlignment;
-  MainAxisSize _mainAxisSize;
+  MainAxisAlignment? _mainAxisAlignment;
+  MainAxisSize? _mainAxisSize;
 
-  CrossAxisAlignment _crossAxisAlignment;
+  CrossAxisAlignment? _crossAxisAlignment;
 
-  Color _background;
-  Color _elevationColor;
+  Color? _background;
+  Color? _elevationColor;
 
   MyTable(
     List<Widget> children, {
-    double width,
-    double height,
-    int flex,
-    VoidCallback onTapCallback,
-    BorderRadius borderRadius = BorderRadius.zero,
-    Color borderColor,
+    double? width,
+    double? height,
+    int? flex,
+    VoidCallback? onTapCallback,
+    BorderRadius? borderRadius,
+    Color? borderColor,
     double elevation = 0.0,
-    EdgeInsetsGeometry margin,
-    EdgeInsetsGeometry padding,
-    ViewType orientation,
-    int crossAxisCount,
+    EdgeInsetsGeometry? margin,
+    EdgeInsetsGeometry? padding,
+    ViewType? orientation,
+    int? crossAxisCount,
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
     MainAxisSize mainAxisSize = MainAxisSize.min,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
-    Color background,
+    Color? background,
     Color elevationColor = Colors.black26,
     bool wrap = false,
   }) {
@@ -216,36 +216,36 @@ class MyTable extends MyWidget {
     Widget widget;
 
     if (_orientation == ViewType.vertical) {
-      if (this._wrap) {
+      if (this._wrap == true) {
         widget = Wrap(
           direction: Axis.vertical,
           children: this._children,
         );
       } else {
         widget = Column(
-          mainAxisAlignment: this._mainAxisAlignment,
-          mainAxisSize: this._mainAxisSize,
-          crossAxisAlignment: this._crossAxisAlignment,
+          mainAxisAlignment: this._mainAxisAlignment ?? MainAxisAlignment.start,
+          mainAxisSize: this._mainAxisSize ?? MainAxisSize.max,
+          crossAxisAlignment: this._crossAxisAlignment ?? CrossAxisAlignment.center,
           children: this._children,
         );
       }
     } else if (_orientation == ViewType.horizontal) {
-      if (this._wrap) {
+      if (this._wrap == true) {
         widget = Wrap(
           direction: Axis.horizontal,
           children: this._children,
         );
       } else {
         widget = Row(
-          mainAxisAlignment: this._mainAxisAlignment,
-          mainAxisSize: this._mainAxisSize,
-          crossAxisAlignment: this._crossAxisAlignment,
+          mainAxisAlignment: this._mainAxisAlignment ?? MainAxisAlignment.start,
+          mainAxisSize: this._mainAxisSize ?? MainAxisSize.max,
+          crossAxisAlignment: this._crossAxisAlignment ?? CrossAxisAlignment.center,
           children: this._children,
         );
       }
     } else if (_orientation == ViewType.gridCount) {
       widget = GridView.count(
-        crossAxisCount: _crossAxisCount,
+        crossAxisCount: _crossAxisCount!,
         children: this._children,
       );
     } else {
@@ -255,24 +255,23 @@ class MyTable extends MyWidget {
     }
 
     if (_padding != null) {
-      widget = Padding(child: widget, padding: _padding);
+      widget = Padding(child: widget, padding: _padding!);
     }
 
     widget = onTapWidget(widget, onTapListener: _onTapCallback, borderRadius: _borderRadius);
 
     List<BoxShadow> boxShadow = [];
-    bool hasElevation = _elevation != null && _elevation > 0.0;
+    bool hasElevation = _elevation != null && _elevation! > 0.0;
     if (hasElevation) {
       boxShadow.add(BoxShadow(
-        color: _elevationColor,
+        color: _elevationColor ?? Colors.transparent,
         offset: Offset(0, 1),
-        blurRadius: _elevation,
+        blurRadius: _elevation ?? 0.0,
       ));
     }
 
-    final border = _borderColor == null ? null : Border.all(color: _borderColor);
     final decorator = BoxDecoration(
-      border: border,
+      border: _borderColor == null ? null : Border.all(color: _borderColor!),
       borderRadius: _borderRadius,
       color: _background,
       boxShadow: boxShadow,
@@ -286,11 +285,11 @@ class MyTable extends MyWidget {
     );
 
     if (_margin != null) {
-      widget = Padding(child: widget, padding: _margin);
+      widget = Padding(child: widget, padding: _margin!);
     }
 
     if (_flex != null) {
-      widget = Expanded(child: widget, flex: _flex);
+      widget = Expanded(child: widget, flex: _flex!);
     }
 
     return widget;

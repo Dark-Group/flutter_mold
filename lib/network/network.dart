@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_mold/log/logger.dart';
 
 class Network {
-  static Network _instance;
+  static Network? _instance;
 
   static Network _getInstance() {
     if (_instance == null) {
@@ -24,32 +24,32 @@ class Network {
       }
       _instance = Network(dio);
     }
-    return _instance;
+    return _instance!;
   }
 
   final Dio _dio;
 
   Network(this._dio);
 
-  static _NetworkBuilder post(String url, String uri, {ResponseType responseType}) {
+  static _NetworkBuilder post(String url, String uri, {ResponseType? responseType}) {
     final _url = url.endsWith("/") ? url : "$url/";
     final _uri = uri.startsWith("/") ? uri.substring(1) : uri;
     return _NetworkBuilder(_url, _uri, "POST", responseType);
   }
 
-  static _NetworkBuilder delete(String url, String uri, {ResponseType responseType}) {
+  static _NetworkBuilder delete(String url, String uri, {ResponseType? responseType}) {
     final _url = url.endsWith("/") ? url : "$url/";
     final _uri = uri.startsWith("/") ? uri.substring(1) : uri;
     return _NetworkBuilder(_url, _uri, "DELETE", responseType);
   }
 
-  static _NetworkBuilder get(String url, String uri, {ResponseType responseType}) {
+  static _NetworkBuilder get(String url, String uri, {ResponseType? responseType}) {
     final _url = url.endsWith("/") ? url : "$url/";
     final _uri = uri.startsWith("/") ? uri.substring(1) : uri;
     return _NetworkBuilder(_url, _uri, "GET", responseType);
   }
 
-  Future<T> _go<T>(_NetworkBuilder builder) async {
+  Future<T?> _go<T>(_NetworkBuilder builder) async {
     final Response<T> _result = await _response<T>(builder);
     return _result.data;
   }
@@ -88,19 +88,19 @@ class _NetworkBuilder {
   final String url;
   final String uri;
   final String method;
-  final ResponseType responseType;
+  final ResponseType? responseType;
 
-  int _connectionTimeout;
+  int? _connectionTimeout;
 
   final Map<String, String> _param = {};
   final Map<String, String> _header = {};
   final List<MultipartFile> _files = [];
 
-  dynamic _body;
+  dynamic? _body;
 
-  ProgressCallback _onSendProgress;
-  ProgressCallback _onReceiveProgress;
-  CancelToken _cancelToken;
+  ProgressCallback? _onSendProgress;
+  ProgressCallback? _onReceiveProgress;
+  CancelToken? _cancelToken;
 
   _NetworkBuilder(this.url, this.uri, this.method, this.responseType);
 
@@ -148,8 +148,7 @@ class _NetworkBuilder {
 
     if (body is Map) {
       final _data = <String, dynamic>{};
-      _data.addAll(body);
-      _data.removeWhere((key, value) => value == null);
+      _data.addAll(body as Map<String, dynamic>);
       _body = _data;
     } else if (body is List) {
       _body = body;
@@ -204,7 +203,7 @@ class _NetworkBuilder {
     return this;
   }
 
-  Future<T> go<T>() {
+  Future<T?> go<T>() {
     return Network._getInstance()._go<T>(this);
   }
 

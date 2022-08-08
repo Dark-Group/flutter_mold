@@ -1,18 +1,17 @@
 import 'dart:core';
 
 import 'package:flutter_mold/flutter_mold.dart';
-import 'dart:core' as core;
 
 abstract class ErrorResult {
   bool isError();
 
   bool nonError() => !isError();
 
-  String getErrorMessage();
+  String? getErrorMessage();
 
-  core.Exception getException();
+  Exception? getException();
 
-  ErrorResult or(core.dynamic that) {
+  ErrorResult or(dynamic that) {
     if (this.isError()) {
       return this;
     } else if (that != null && that is ErrorResult) {
@@ -23,40 +22,31 @@ abstract class ErrorResult {
     return ErrorResult.NONE;
   }
 
-  static ErrorResult makeWithString(String errorMessage) {
+  static ErrorResult makeWithString(String? errorMessage) {
     if (errorMessage == null) {
-      throw core.Exception("The error message cannot be null");
+      throw Exception("The error message cannot be null");
     }
 
     if (errorMessage.isEmpty) {
-      throw core.Exception("Error message is empty");
+      throw Exception("Error message is empty");
     }
     return new Error(errorMessage, null);
   }
 
-  static ErrorResult makeWithException(core.Exception error) {
+  static ErrorResult makeWithException(Exception? error) {
     if (error == null) {
-      throw core.Exception("The error type cannot be null");
+      throw Exception("The error type cannot be null");
     }
-
-    if (error == null) {
-      throw core.Exception("Exception type is null");
-    }
-
     return new Error(error.toString(), error);
   }
 
-  static ErrorResult make(core.dynamic error) {
+  static ErrorResult make(dynamic error) {
     if (error == null) {
-      throw core.Exception("The error type cannot be null");
+      throw Exception("The error type cannot be null");
     }
 
-    if (error == null) {
-      throw core.Exception("Exception type is null");
-    }
-
-    if (error.runtimeType == core.Error) {
-      String errorMessage = (error as core.Error).toString();
+    if (error.runtimeType == Error) {
+      String errorMessage = (error as Error).toString();
       return new Error(errorMessage, Exception(errorMessage));
     } else if (error.runtimeType == Exception) {
       Exception exception = error as Exception;
@@ -68,7 +58,7 @@ abstract class ErrorResult {
     }
   }
 
-  static ErrorResult makeWithVariables(core.List<Variable> variables) {
+  static ErrorResult makeWithVariables(List<Variable> variables) {
     for (Variable e in variables) {
       ErrorResult error = e.getError();
       if (error.isError()) {
@@ -84,10 +74,10 @@ abstract class ErrorResult {
 
 class _ErrorNone extends ErrorResult {
   @override
-  String getErrorMessage() => null;
+  String? getErrorMessage() => null;
 
   @override
-  core.Exception getException() => null;
+  Exception? getException() => null;
 
   @override
   bool isError() => false;
@@ -95,15 +85,15 @@ class _ErrorNone extends ErrorResult {
 
 class Error extends ErrorResult {
   final String errorMessage;
-  final Exception exception;
+  final Exception? exception;
 
   Error(this.errorMessage, [this.exception]);
 
   @override
-  String getErrorMessage() => errorMessage;
+  String? getErrorMessage() => errorMessage;
 
   @override
-  Exception getException() => exception;
+  Exception? getException() => exception;
 
   @override
   bool isError() => true;

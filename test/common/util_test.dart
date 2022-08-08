@@ -5,11 +5,11 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group("test nvl", () {
     test("test dynamic type with null object", () {
-      expect(nvl(null), isNull);
+      expect(nvl(null, null), isNull);
     });
 
     test("test dynamic type with not null object", () {
-      expect(nvl(3).runtimeType, equals(int));
+      expect(nvl(3, 4).runtimeType, equals(int));
     });
 
     test("test null object with defaultValue ", () {
@@ -18,10 +18,6 @@ void main() {
   });
 
   group("test nvlTryInt", () {
-    test("test with null object", () {
-      expect(nvlTryInt(null), isNull);
-    });
-
     test("test with int object", () {
       expect(nvlTryInt(3), equals(3));
     });
@@ -40,10 +36,6 @@ void main() {
   });
 
   group("test nvlTryIntByZero", () {
-    test("test with null object", () {
-      expect(nvlTryIntByZero(null), isZero);
-    });
-
     test("test with int object", () {
       expect(nvlTryIntByZero(3), equals(3));
     });
@@ -62,10 +54,6 @@ void main() {
   });
 
   group("test nvlTryNumByZero", () {
-    test("test with null object", () {
-      expect(nvlTryNumByZero(null), isZero);
-    });
-
     test("test with int object", () {
       expect(nvlTryNumByZero(3), equals(3));
     });
@@ -88,10 +76,6 @@ void main() {
   });
 
   group("test nvlTryNum", () {
-    test("test with null object", () {
-      expect(nvlTryNum(null), isNull);
-    });
-
     test("test with int object", () {
       expect(nvlTryNum(3), equals(3));
     });
@@ -114,10 +98,6 @@ void main() {
   });
 
   group("test nvlTryDouble", () {
-    test("test with null object", () {
-      expect(nvlTryDouble(null), isNull);
-    });
-
     test("test with double object", () {
       expect(nvlTryDouble(3.0), equals(3.0));
     });
@@ -132,10 +112,6 @@ void main() {
   });
 
   group("test nvlInt", () {
-    test("test with null object", () {
-      expect(nvlInt(null), isZero);
-    });
-
     test("test with not null object", () {
       expect(nvlInt(3), equals(3));
     });
@@ -196,10 +172,6 @@ void main() {
   });
 
   group("test fromHex", () {
-    test("test fromHex function with null object", () {
-      expect(() => Util.fromHex(null), throwsA(isA()));
-    });
-
     test("test fromHex function with empty String", () {
       expect(() => Util.fromHex(""), throwsA(isA()));
     });
@@ -230,8 +202,8 @@ void main() {
       expect(Util.get(Map<String, dynamic>(), "key", defaultValue: "defaultValue"), "defaultValue");
     });
 
-    test("test get function with null key", () {
-      expect(Util.get(Map<String, dynamic>(), null), isEmpty);
+    test("test get function with empty key", () {
+      expect(Util.get(Map<String, dynamic>(), ""), isEmpty);
     });
 
     test("test get function with null default key", () {
@@ -256,8 +228,8 @@ void main() {
       expect(Util.fazoGet(["ever", "never", "time"], [], "ever"), isNull);
     });
 
-    test("test fazoGet function with null key", () {
-      expect(Util.fazoGet(["ever", "never", "time"], ["ever", "time", "never"], null), isNull);
+    test("test fazoGet function with empty key", () {
+      expect(Util.fazoGet(["ever", "never", "time"], ["ever", "time", "never"], ""), isNull);
     });
 
     test("test fazoGet function with there is a key but there is no value", () {

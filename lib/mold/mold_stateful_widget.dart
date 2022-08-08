@@ -7,9 +7,9 @@ enum WidgetState {
 }
 
 abstract class MoldStatefulWidget extends StatefulWidget {
-  BuildContext _context;
-  WidgetState state;
-  VoidCallback _setState;
+  BuildContext? _context;
+  WidgetState? state;
+  VoidCallback? _setState;
 
   @override
   _MoldStatefulWidgetState createState() => _MoldStatefulWidgetState();
@@ -18,7 +18,9 @@ abstract class MoldStatefulWidget extends StatefulWidget {
     _context = context;
   }
 
-  BuildContext getContext() => _context;
+  BuildContext? getContext() => _context;
+
+  BuildContext requiredContext() => getContext()!;
 
   void onCreate() {}
 

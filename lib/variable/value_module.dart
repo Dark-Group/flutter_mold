@@ -10,10 +10,10 @@ import 'package:flutter_mold/variable/variable_util.dart';
 
 abstract class ValueModule extends ChangeNotifier implements VariableLike {
   final ValueArray<ValueForm> forms;
-  final Object tag;
-  async.Timer _debounce;
+  final Object? tag;
+  async.Timer? _debounce;
 
-  ValueModule({@required this.forms, this.tag});
+  ValueModule({required this.forms, this.tag});
 
   int getModuleId();
 

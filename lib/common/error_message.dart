@@ -18,7 +18,7 @@ class ErrorMessage {
   static final String OAUTH_NUMERIC_OR_VALUE = "numeric or value".toLowerCase();
   static final String OAUTH_NO_DATA_FOUND = "no data found".toLowerCase();
 
-  static String getMessage(String error, {bool isOauth = false}) {
+  static String? getMessage(String? error, {bool isOauth = false}) {
     if (error == null) return null;
     String err = error.toLowerCase();
     if (err.contains(CONNECTION_FAIL)) {
@@ -39,40 +39,40 @@ class ErrorMessage {
     return err;
   }
 
-  final String messageText;
-  final String stacktrace;
-  final String httpCode;
+  final String? messageText;
+  final String? stacktrace;
+  final String? httpCode;
 
-  ErrorMessage(String message, {String stacktrace, String httpCode})
-      : this.messageText = nvl(getMessage(message, isOauth: httpCode == "401")),
-        this.stacktrace = nvl(stacktrace),
-        this.httpCode = nvl(httpCode);
+  ErrorMessage(String? message, {String? stacktrace, String? httpCode})
+      : this.messageText = nvl(getMessage(message, isOauth: httpCode == "401"), "no error message"),
+        this.stacktrace = nvl(stacktrace, null),
+        this.httpCode = nvl(httpCode, null);
 
   factory ErrorMessage.parse(dynamic error) {
     return ErrorMessage.parseWithStacktrace(error, "");
   }
 
   factory ErrorMessage.parseWithStacktrace(dynamic error, dynamic stacktrace) {
-    String message = error.toString();
-    String httpCode = "-1";
+    String? message = error.toString();
+    String? httpCode = "-1";
     if (error is DioError) {
       if (error.type == DioErrorType.response) {
-        message = error.response.data.toString();
-        if (message.trim().isEmpty) {
+        message = error.response?.data.toString();
+        if (message?.trim().isNotEmpty != true) {
           message = error.message;
         }
-        httpCode = error.response.statusCode.toString();
+        httpCode = error.response?.statusCode.toString();
       }
     }
-    return ErrorMessage(message.trim(), stacktrace: stacktrace.toString(), httpCode: httpCode);
+    return ErrorMessage(message?.trim(), stacktrace: stacktrace.toString(), httpCode: httpCode);
   }
 
   bool get isNotEmptyMessage => messageText?.isNotEmpty == true;
 
   @override
   String toString() {
-    if (stacktrace == null || stacktrace.trim().isEmpty) {
-      return messageText;
+    if (stacktrace == null || stacktrace?.trim().isNotEmpty != true) {
+      return messageText ?? "no error message text";
     }
     return "$messageText\n$stacktrace";
   }

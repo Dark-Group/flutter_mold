@@ -8,7 +8,7 @@ class VariableBuilder<T extends ChangeNotifier> extends MyWidget {
   final T value;
   final VariableWidgetBuilder<T> builder;
 
-  VariableBuilder({@required this.value, @required this.builder});
+  VariableBuilder({required this.value, required this.builder});
 
   @override
   Widget build(BuildContext context) {

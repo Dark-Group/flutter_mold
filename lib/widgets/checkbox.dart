@@ -6,13 +6,13 @@ import 'package:flutter_mold/mold/mold_stateful_widget.dart';
 // ignore: must_be_immutable
 class MyCheckBox extends MoldStatefulWidget {
   bool check;
-  LazyStream<bool> _subject = new LazyStream();
+  LazyStream<bool?> _subject = new LazyStream();
 
-  MyCheckBox(this.check, [void onCheckedChange(bool checked)]) {
+  MyCheckBox(this.check, [void Function(bool checked)? onCheckedChange]) {
     this._listener = onCheckedChange;
   }
 
-  void Function(bool checked) _listener;
+  void Function(bool checked)? _listener;
 
   MyCheckBox setListener(void onCheckedChange(bool checked)) {
     this._listener = onCheckedChange;
@@ -37,7 +37,7 @@ class MyCheckBox extends MoldStatefulWidget {
 
   @override
   Widget onCreateWidget(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<bool?>(
       initialData: check,
       stream: _subject.stream,
       builder: (buildContext, snapshot) {
@@ -46,7 +46,7 @@ class MyCheckBox extends MoldStatefulWidget {
     );
   }
 
-  bool get isChecked => _subject?.value ?? false;
+  bool get isChecked => _subject.value ?? false;
 
-  set setChecked(bool value) => _subject?.add(value);
+  set setChecked(bool value) => _subject.add(value);
 }
