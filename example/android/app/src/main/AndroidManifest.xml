@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.flutter_mold_example">
+    package="uz.darkgroup.flutter_mold_example">
    <application
         android:label="flutter_mold_example"
         android:name="${applicationName}"

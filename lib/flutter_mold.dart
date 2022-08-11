@@ -1,5 +1,7 @@
 library flutter_mold;
 
+import 'flutter_mold_platform_interface.dart';
+
 export 'package:flutter_mold/widgets/theme.dart';
 
 export 'common/date_util.dart';
@@ -36,3 +38,9 @@ export 'variable/variable_util.dart';
 export 'widgets/button.dart';
 export 'widgets/edit_text.dart';
 export 'widgets/widgets.dart';
+
+class FlutterMold {
+  Future<String?> getPlatformVersion() {
+    return FlutterMoldPlatform.instance.getPlatformVersion();
+  }
+}
