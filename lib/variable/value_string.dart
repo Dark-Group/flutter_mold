@@ -1,23 +1,21 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_mold/common/util.dart';
 import 'package:flutter_mold/variable/error_result.dart';
 import 'package:flutter_mold/variable/text_value.dart';
 
-class ValueString extends ChangeNotifier implements TextValue {
+class ValueString extends TextValue {
   final int size;
   String _oldValue = "";
   String _value = "";
   final bool _mandatory;
 
-  ValueString({required this.size, String value = "", bool mandatory = false}) : this._mandatory = mandatory {
-    this._value = nvlString(value);
+  ValueString({required this.size, String value = "", bool mandatory = false}) : _mandatory = mandatory {
+    _value = nvlString(value);
   }
 
   String getValue() => _value;
 
   void setValue(String? value) {
-    this._value = nvlString(value);
-    notifyListeners();
+    _value = nvlString(value);
   }
 
   bool isEmpty() => getValue().isEmpty;
@@ -32,23 +30,23 @@ class ValueString extends ChangeNotifier implements TextValue {
 
   @override
   void readyToChange() {
-    this._oldValue = this._value;
+    _oldValue = _value;
   }
 
   @override
-  bool mandatory() => this._mandatory;
+  bool mandatory() => _mandatory == true;
 
   @override
   bool modified() => _value != _oldValue;
 
   @override
   ErrorResult getError() {
-    if (this._value.length > size) {
+    if (_value.length > size) {
       final errorMessage = "ValueString: Text length must not exceed $size characters";
       return ErrorResult.makeWithString(errorMessage);
     }
 
-    if (this.mandatory() && this.isEmpty()) {
+    if (mandatory() && isEmpty()) {
       return ErrorResult.makeWithString("ValueString: value is mandatory");
     }
 

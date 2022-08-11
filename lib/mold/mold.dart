@@ -47,6 +47,7 @@ class Mold {
     if (kIsWeb) {
       return MaterialApp(
         theme: ThemeData(
+          useMaterial3: true,
           brightness: color.brightness,
           toggleableActiveColor: color.app_color,
           colorScheme: ColorScheme.fromSwatch().copyWith(
@@ -84,6 +85,7 @@ class Mold {
     } else {
       return MaterialApp(
         theme: ThemeData(
+          useMaterial3: true,
           brightness: color.brightness,
           toggleableActiveColor: color.app_color,
           colorScheme: ColorScheme.fromSwatch().copyWith(
