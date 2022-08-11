@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mold/mold/mold_application.dart';
 
 class MoldStyle {
-  static final MoldStyle instance = new MoldStyle._();
+  static final MoldStyle instance = MoldStyle._();
 
   static MoldTheme getTheme() {
     return instance.theme;
@@ -15,13 +15,13 @@ class MoldStyle {
 
   MoldStyle._();
 
-  MoldTheme _theme = MoldTheme();
+  MoldTheme? _theme;
 
-  MoldTheme get theme => _theme;
+  MoldTheme get theme => _theme!;
 
-  MoldColor _color = MoldColor();
+  MoldColor? _color;
 
-  MoldColor get color => _color;
+  MoldColor get color => _color!;
 
   bool get isInit => _theme != null && _color != null;
 

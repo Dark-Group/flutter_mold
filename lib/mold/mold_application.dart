@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mold/common/lazy_stream.dart';
 import 'package:flutter_mold/localization/app_lang.dart';
@@ -72,7 +73,7 @@ class MoldApplicationWidget extends StatelessWidget {
     _applicationWidget = this;
   }
 
-  final LazyStream<bool> reloadScreen = new LazyStream(() => false);
+  final LazyStream<bool> reloadScreen = LazyStream(() => false);
 
   bool isWaitReloadScreen = false;
 
@@ -80,9 +81,26 @@ class MoldApplicationWidget extends StatelessWidget {
     if (isWaitReloadScreen) return;
     isWaitReloadScreen = true;
 
-    Future.delayed(Duration(milliseconds: 1000), () {
-      this.reloadScreen.add(true);
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      reloadScreen.add(true);
     });
+  }
+
+  void initStyle() async {
+    if (MoldStyle.instance.isInit == true) {
+      return;
+    }
+    MoldStyle.instance.initColor();
+
+    final appColor = await application.getColor();
+    print('AppColor: $appColor');
+    MoldStyle.instance.initColor(color: appColor);
+
+    final appTheme = await application.getTheme();
+    print('AppTheme: $appTheme');
+    MoldStyle.instance.initTheme(theme: appTheme);
+
+    App.notify();
   }
 
   @override
@@ -99,20 +117,11 @@ class MoldApplicationWidget extends StatelessWidget {
       AppLang.instance.init();
     }
 
-    if (!MoldStyle.instance.isInit) {
-      MoldStyle.instance.initColor();
+    initStyle();
 
-      application
-          .getColor()
-          .then((appColor) => MoldStyle.instance.initColor(color: appColor))
-          .then((_) => this.application.getTheme())
-          .then((appTheme) => MoldStyle.instance.initTheme(theme: appTheme))
-          .then((value) => App.notify());
-    }
+    runReloadScreen();
 
-    this.runReloadScreen();
-
-    return new StreamBuilder<bool?>(
+    return StreamBuilder<bool?>(
         stream: reloadScreen.stream,
         initialData: reloadScreen.value,
         builder: (_, st) {
@@ -162,7 +171,7 @@ class App {
 }
 
 class _AppChangeProvider extends ChangeNotifier {
-  static final _AppChangeProvider instance = new _AppChangeProvider();
+  static final _AppChangeProvider instance = _AppChangeProvider();
 
   final AppLang appLang = AppLang.instance;
 

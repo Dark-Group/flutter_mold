@@ -94,7 +94,7 @@ class MySpinner extends MoldStatefulWidget {
   Widget? icon;
   Key? key;
 
-  LazyStream<DropdownMenuItem<SpinnerOption>> selectValueSubject = LazyStream();
+  LazyStream<DropdownMenuItem<SpinnerOption>?> selectValueSubject = LazyStream();
 
   MySpinner(SpinnerValue value,
       {Key? key,
@@ -167,7 +167,7 @@ class MySpinner extends MoldStatefulWidget {
     super.onCreate();
     selectValueSubject.add(selectedMenu);
 
-    this.selectValueSubject.get().listen((value) {
+    selectValueSubject.get().listen((value) {
       _onItemSelect?.call(value!.value!);
     });
   }
@@ -190,13 +190,13 @@ class MySpinner extends MoldStatefulWidget {
     Widget body = StreamBuilder(
       initialData: selectValueSubject.value,
       stream: selectValueSubject.stream,
-      builder: (buildContext, snapshot) {
+      builder: (_, st) {
         if (icon != null) {
           return MyTable.horizontal(
             [
-              Expanded(child: icon!, flex: 1),
-              SizedBox(height: 6),
-              Expanded(child: _buildDropDown(selectValueSubject.value!), flex: 9)
+              Expanded(flex: 1, child: icon!),
+              const SizedBox(height: 6),
+              Expanded(flex: 9, child: _buildDropDown(selectValueSubject.value!))
             ],
             crossAxisAlignment: CrossAxisAlignment.center,
             width: double.infinity,
@@ -241,14 +241,14 @@ class MySpinner extends MoldStatefulWidget {
       key: key,
       isExpanded: textWrapped == true,
       value: selectValue.value,
-      icon: dropDownIcon != null ? dropDownIcon : Icon(Icons.arrow_drop_down, color: Colors.black38),
+      icon: dropDownIcon ?? const Icon(Icons.arrow_drop_down, color: Colors.black38),
       underline: Container(),
       items: getMenus,
       onChanged: (newValue) {
         if (newValue!.code != selectValueSubject.value!.value?.code) {
           _value?.value = newValue;
           final foundValue = getMenus.firstWhere((e) => e.value?.code == newValue.code);
-          this.selectValueSubject.add(foundValue);
+          selectValueSubject.add(foundValue);
         }
       },
     );
@@ -257,7 +257,7 @@ class MySpinner extends MoldStatefulWidget {
 
   @override
   void onDestroy() {
-    selectValueSubject?.close();
+    selectValueSubject.close();
     super.onDestroy();
   }
 }
