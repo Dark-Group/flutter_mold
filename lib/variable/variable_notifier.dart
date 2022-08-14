@@ -18,6 +18,9 @@ class VariableNotifier<V extends Variable> extends ChangeNotifier implements Var
   ErrorResult getError() => _value?.getError() ?? ErrorResult.NONE;
 
   @override
+  bool enable() => _value?.enable() == true;
+
+  @override
   bool mandatory() => _value?.mandatory() == true;
 
   @override

@@ -6,37 +6,51 @@ class ValueBool extends ChangeNotifier implements TextValue {
   bool? _oldValue;
   bool _value = false;
   final bool? _mandatory;
+  bool? _enable;
 
-  ValueBool({bool value = false, bool mandatory = false}) : this._mandatory = mandatory {
-    this._value = value;
+  ValueBool({
+    bool value = false,
+    bool mandatory = false,
+    bool enable = true,
+  })  : _mandatory = mandatory,
+        _enable = enable == true {
+    _value = value;
   }
 
   bool? getValue() => this._value;
 
   void setValue(bool newValue) {
-    this._value = newValue;
+    _value = newValue;
     notifyListeners();
   }
 
   @override
-  String getText() => this._value == true ? "1" : "0";
+  String getText() => _value == true ? "1" : "0";
 
   @override
   void setText(String text) {
-    this._value = "1" == text;
+    _value = "1" == text;
+    notifyListeners();
+  }
+
+  void setEnable(bool enable){
+    _enable = enable;
     notifyListeners();
   }
 
   @override
   void readyToChange() {
-    this._oldValue = this._value;
+    _oldValue = _value;
   }
 
   @override
-  bool mandatory() => this._mandatory == true;
+  bool enable() => _enable == true;
 
   @override
-  bool modified() => this._oldValue != this._value;
+  bool mandatory() => _mandatory == true;
+
+  @override
+  bool modified() => _oldValue != _value;
 
   @override
   ErrorResult getError() => ErrorResult.NONE;

@@ -7,21 +7,23 @@ import 'package:flutter_mold/variable/value_string.dart';
 class ValueInt extends ChangeNotifier implements TextValue {
   final ValueString _value;
   final bool _mandatory;
+  bool _enable;
 
-  ValueInt({required int size, String? text, int? number, bool mandatory = false}) //
-      : this._value = ValueString(size: size, mandatory: false),
-        this._mandatory = mandatory {
+  ValueInt({required int size, String? text, int? number, bool mandatory = false, bool enable = true}) //
+      : _value = ValueString(size: size, mandatory: false),
+        _mandatory = mandatory,
+        _enable = enable == true {
     if (text != null) {
-      this.setText(text);
+      setText(text);
     }
 
     if (number != null) {
-      this.setValue(number);
+      setValue(number);
     }
   }
 
   int? getValue() {
-    String r = this._value.getValue();
+    String r = _value.getValue();
     if (r.isNotEmpty == true) {
       return int.tryParse(r);
     }
@@ -38,46 +40,54 @@ class ValueInt extends ChangeNotifier implements TextValue {
 
   void setValue(int? newValue) {
     if (newValue == null) {
-      this._value.setValue(null);
+      _value.setValue(null);
     } else {
-      this._value.setValue(newValue.toString());
+      _value.setValue(newValue.toString());
     }
     notifyListeners();
   }
 
-  bool isEmpty() => this._value.isEmpty();
+  bool isEmpty() => _value.isEmpty();
 
-  bool nonEmpty() => this._value.nonEmpty();
+  bool nonEmpty() => _value.nonEmpty();
 
   @override
-  String getText() => this._value.getText();
+  String getText() => _value.getText();
 
   @override
   void setText(String text) {
-    this._value.setText(text);
+    _value.setText(text);
+    notifyListeners();
+  }
+
+  void setEnable(bool enable) {
+    _enable = enable;
     notifyListeners();
   }
 
   @override
   void readyToChange() {
-    this._value.readyToChange();
+    _value.readyToChange();
   }
 
   @override
-  bool mandatory() => this._mandatory;
+  bool enable() => _enable == true;
 
   @override
-  bool modified() => this._value.modified();
+  bool mandatory() => _mandatory;
+
+  @override
+  bool modified() => _value.modified();
 
   @override
   ErrorResult getError() {
-    ErrorResult r = this._value.getError();
+    ErrorResult r = _value.getError();
     if (r.isError()) {
       return r;
     }
 
     try {
-      String q = this._value.getValue();
+      String q = _value.getValue();
       if (q.isNotEmpty == true) {
         int.parse(q);
       }
@@ -86,7 +96,7 @@ class ValueInt extends ChangeNotifier implements TextValue {
       return ErrorResult.makeWithException(ex as Exception);
     }
 
-    if (this.mandatory() && this.isEmpty()) {
+    if (mandatory() && isEmpty()) {
       return ErrorResult.makeWithString("ValueInt: value is mandatory");
     }
 

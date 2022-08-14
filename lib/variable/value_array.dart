@@ -6,77 +6,88 @@ import 'package:flutter_mold/variable/variable_util.dart';
 class ValueArray<E extends Variable> extends ChangeNotifier implements Variable {
   final List<E> _items;
   bool _changed = false;
+  bool _enable;
 
-  ValueArray({List<E>? items}) : this._items = <E>[] {
+  ValueArray({List<E>? items, bool enable = true})
+      : _items = <E>[],
+        _enable = enable == true {
     if (items != null && items.isNotEmpty) {
-      this._items.addAll(items);
+      _items.addAll(items);
     }
-    this._changed = false;
+    _changed = false;
   }
 
-  List<E> getItems() => this._items.map((e) => e).toList();
+  List<E> getItems() => _items.map((e) => e).toList();
 
   void prepend(E item) {
-    this._items.insert(0, item);
-    this._changed = true;
+    _items.insert(0, item);
+    _changed = true;
     notifyListeners();
   }
 
   void append(E item) {
-    this._items.add(item);
-    this._changed = true;
+    _items.add(item);
+    _changed = true;
     notifyListeners();
   }
 
   void delete(final E item) {
-    this._items.removeWhere((e) => e == item);
-    this._changed = true;
+    _items.removeWhere((e) => e == item);
+    _changed = true;
     notifyListeners();
   }
 
   void deleteWhere(bool onWhere(E element)) {
-    this._items.removeWhere(onWhere);
-    this._changed = true;
+    _items.removeWhere(onWhere);
+    _changed = true;
     notifyListeners();
   }
 
   void clear() {
-    this._items.clear();
-    this._changed = true;
+    _items.clear();
+    _changed = true;
     notifyListeners();
   }
 
   void addAll(final List<E> values) {
-    this._items.addAll(values);
-    this._changed = true;
+    _items.addAll(values);
+    _changed = true;
     notifyListeners();
   }
 
   void setValue(final List<E> values) {
-    this._items.clear();
-    this._items.addAll(values);
-    this._changed = true;
+    _items.clear();
+    _items.addAll(values);
+    _changed = true;
     notifyListeners();
   }
 
-  bool get isEmpty => this._items.isEmpty;
+  bool get isEmpty => _items.isEmpty;
 
   bool get nonEmpty => !isEmpty;
 
-  @override
-  void readyToChange() {
-    this._changed = false;
-    VariableUtil.readyToChange(this._items);
+  void setEnable(bool enable) {
+    _enable = enable;
+    notifyListeners();
   }
 
   @override
-  bool mandatory() => VariableUtil.mandatory(this._items);
+  void readyToChange() {
+    _changed = false;
+    VariableUtil.readyToChange(_items);
+  }
+
+  @override
+  bool enable() => _enable == true;
+
+  @override
+  bool mandatory() => VariableUtil.mandatory(_items);
 
   @override
   bool modified() {
-    return this._changed || VariableUtil.modified(this._items);
+    return _changed || VariableUtil.modified(_items);
   }
 
   @override
-  ErrorResult getError() => VariableUtil.getError(this._items);
+  ErrorResult getError() => VariableUtil.getError(_items);
 }
