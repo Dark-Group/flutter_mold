@@ -34,6 +34,7 @@ export 'variable/value_string.dart';
 export 'variable/variable.dart';
 export 'variable/variable_like.dart';
 export 'variable/variable_notifier.dart';
+export 'variable/variable_stream.dart';
 export 'variable/variable_util.dart';
 export 'widgets/button.dart';
 export 'widgets/edit_text.dart';

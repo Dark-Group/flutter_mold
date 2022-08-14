@@ -36,6 +36,9 @@ class SpinnerOption extends Variable {
   ErrorResult getError() => ErrorResult.NONE;
 
   @override
+  bool enable() => true;
+
+  @override
   bool mandatory() => false;
 
   @override
@@ -61,60 +64,74 @@ class ValueSpinner extends ChangeNotifier implements TextValue {
   SpinnerOption? _oldValue;
   SpinnerOption _value;
   final bool _mandatory;
+  bool _enable;
 
-  ValueSpinner({required List<SpinnerOption> values, SpinnerOption? value, bool mandatory = false})
-      : this._options = values.map((e) => e).toList(),
-        this._mandatory = mandatory,
-        this._value = value ?? values[0] {
+  ValueSpinner({
+    required List<SpinnerOption> values,
+    SpinnerOption? value,
+    bool mandatory = false,
+    bool enable = true,
+  })  : _options = values.map((e) => e).toList(),
+        _mandatory = mandatory,
+        _enable = enable == true,
+        _value = value ?? values[0] {
     _checkValue(this);
   }
 
-  SpinnerOption getValue() => this._value;
+  SpinnerOption getValue() => _value;
 
-  List<SpinnerOption> getOptions() => this._options;
+  List<SpinnerOption> getOptions() => _options;
 
   void setValue(SpinnerOption newValue) {
     _checkValue(this, newValue);
-    this._value = newValue;
+    _value = newValue;
     notifyListeners();
   }
 
   void setOptions(List<SpinnerOption> options) {
     if (options.isEmpty) throw Exception("ValueSpinner: isEmpty");
-    this._options.clear();
-    this._options.addAll(options.map((e) => e).toList());
+    _options.clear();
+    _options.addAll(options.map((e) => e).toList());
     setValue(options.firstWhereOrNull((e) => e.code == getValue().code) ?? options.first);
   }
 
-  int getPosition() => this._options.indexOf(this._value);
+  int getPosition() => _options.indexOf(_value);
 
-  bool isEmpty() => this._value.code.isEmpty;
+  bool isEmpty() => _value.code.isEmpty;
 
   bool nonEmpty() => !isEmpty();
 
   @override
-  String getText() => this._value.code;
+  String getText() => _value.code;
 
   @override
   void setText(String text) {
-    final found = this._options.firstWhere((e) => text == e.code);
-    this.setValue(found);
+    final found = _options.firstWhere((e) => text == e.code);
+    setValue(found);
+  }
+
+  void setEnable(bool enable) {
+    _enable = enable;
+    notifyListeners();
   }
 
   @override
   void readyToChange() {
-    this._oldValue = this._value;
+    _oldValue = _value;
   }
 
   @override
-  bool mandatory() => this._mandatory;
+  bool enable() => _enable == true;
 
   @override
-  bool modified() => this._oldValue != this._value;
+  bool mandatory() => _mandatory;
+
+  @override
+  bool modified() => _oldValue != _value;
 
   @override
   ErrorResult getError() {
-    if (this.mandatory() && this.isEmpty()) {
+    if (mandatory() && isEmpty()) {
       return ErrorResult.makeWithString("ValueSpinner: value is mandatory");
     }
     return ErrorResult.NONE;

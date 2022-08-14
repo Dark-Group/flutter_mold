@@ -7,8 +7,15 @@ class ValueString extends TextValue {
   String _oldValue = "";
   String _value = "";
   final bool _mandatory;
+  bool _enable;
 
-  ValueString({required this.size, String value = "", bool mandatory = false}) : _mandatory = mandatory {
+  ValueString({
+    required this.size,
+    String value = "",
+    bool mandatory = false,
+    bool enable = true,
+  })  : _mandatory = mandatory == true,
+        _enable = enable == true {
     _value = nvlString(value);
   }
 
@@ -28,10 +35,17 @@ class ValueString extends TextValue {
   @override
   void setText(String text) => setValue(text);
 
+  void setEnable(bool enable){
+    _enable = enable;
+  }
+
   @override
   void readyToChange() {
     _oldValue = _value;
   }
+
+  @override
+  bool enable() => _enable == true;
 
   @override
   bool mandatory() => _mandatory == true;

@@ -11,6 +11,7 @@ class ValueDecimal extends ChangeNotifier implements TextValue, Quantity {
   final int scale;
   final ValueString _value;
   final bool? _mandatory;
+  bool? _enable;
 
   Decimal? _cache;
 
@@ -18,30 +19,32 @@ class ValueDecimal extends ChangeNotifier implements TextValue, Quantity {
     required this.precision,
     required this.scale,
     bool? mandatory = false,
-  })  : this._value = new ValueString(size: 200, mandatory: false),
-        this._mandatory = mandatory;
+    bool? enable = true,
+  })  : _value = ValueString(size: 200, mandatory: false),
+        _mandatory = mandatory,
+        _enable = enable;
 
   Decimal? getValue() {
-    if (this._cache == null) {
-      String s = this._value.getValue();
+    if (_cache == null) {
+      String s = _value.getValue();
       if (s.isNotEmpty == true) {
         try {
-          this._cache = new Decimal.parse(s);
+          _cache = Decimal.parse(s);
         } catch (e, st) {
           Log.error(e, st);
         }
       }
     }
-    return this._cache;
+    return _cache;
   }
 
   void setValue(Decimal? newValue) {
-    this._cache = null;
+    _cache = null;
     String v = "";
     if (newValue != null) {
       v = newValue.toString();
     }
-    this._value.setValue(v);
+    _value.setValue(v);
     notifyListeners();
   }
 
@@ -60,42 +63,50 @@ class ValueDecimal extends ChangeNotifier implements TextValue, Quantity {
   bool nonZero() => !isZero();
 
   @override
-  Decimal getQuantity() => this.getValue() ?? Decimal.zero;
+  Decimal getQuantity() => getValue() ?? Decimal.zero;
 
   @override
-  String getText() => this._value.getValue();
+  String getText() => _value.getValue();
 
   @override
   void setText(String text) {
-    this._cache = null;
-    this._value.setText(text);
+    _cache = null;
+    _value.setText(text);
+    notifyListeners();
+  }
+
+  void setEnable(bool enable) {
+    _enable = enable;
     notifyListeners();
   }
 
   @override
-  void readyToChange() => this._value.readyToChange();
+  void readyToChange() => _value.readyToChange();
 
   @override
-  bool mandatory() => this._mandatory??false;
+  bool enable() => _enable == true;
 
   @override
-  bool modified() => this._value.modified();
+  bool mandatory() => _mandatory ?? false;
+
+  @override
+  bool modified() => _value.modified();
 
   @override
   ErrorResult getError() {
     Decimal? v = getValue();
 
-    if (this._value.nonEmpty() && v == null) {
+    if (_value.nonEmpty() && v == null) {
       String errorMessage = "ValueDecimal: The field must contain only numeric";
       return ErrorResult.makeWithString(errorMessage);
     }
 
-    if (v != null && (v.precision > this.precision || v.scale > this.scale)) {
+    if (v != null && (v.precision > precision || v.scale > scale)) {
       String errorMessage = "ValueDecimal: Incorrect format $precision,$scale";
       return ErrorResult.makeWithString(errorMessage);
     }
 
-    if (this.mandatory() && this.isEmpty()) {
+    if (mandatory() && isEmpty()) {
       return ErrorResult.makeWithString("ValueDecimal: value is mandatory");
     }
 

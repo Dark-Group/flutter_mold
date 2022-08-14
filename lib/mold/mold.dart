@@ -118,41 +118,31 @@ class Mold {
     BuildContext context,
     dynamic content, {
     Bundle? bundle,
-    void onPopResult(R? result)?,
+    void Function(R? result)? onPopResult,
   }) {
-    Bundle? argumentBundle = bundle;
-    if (argumentBundle == null) {
-      argumentBundle = Bundle.newBundle(context);
-    }
+    Bundle? argumentBundle = bundle ??= Bundle.newBundle(context);
 
-    Future<R?> push = Navigator.pushNamed(
+    Navigator.pushNamed(
       context,
       content,
       arguments: argumentBundle,
-    );
-
-    push.then((value) => onPopResult?.call(value));
+    ).then((value) => onPopResult?.call(value as R?));
   }
 
   static void replaceContent<R>(
     BuildContext context,
     dynamic content, {
     Bundle? bundle,
-    void onPopResult(R? result)?,
+    void Function(R? result)? onPopResult,
   }) {
-    Bundle? argumentBundle = bundle;
-    if (argumentBundle == null) {
-      argumentBundle = Bundle.newBundle(context);
-    }
+    Bundle? argumentBundle = bundle ??= Bundle.newBundle(context);
 
-    Future<R?> push = Navigator.pushNamedAndRemoveUntil(
+   Navigator.pushNamedAndRemoveUntil(
       context,
       content,
       (routes) => false,
       arguments: argumentBundle,
-    );
-
-    push.then((value) => onPopResult?.call(value));
+    ).then((value) => onPopResult?.call(value as R?));
   }
 
   static void onBackPressed<T extends Object>(BuildContext context, [T? result]) {
