@@ -19,6 +19,8 @@ dependencies:
 
   plugin_platform_interface: ^2.0.2
 
+  go_router: 4.2.7
+
   dio: 4.0.4
   flutter_svg: 1.0.0
   shared_preferences: 2.0.7

@@ -7,7 +7,7 @@ import 'package:flutter_mold/log/logger.dart';
 
 class AppLangUtil {
   static Future<Tuple<String, Map<String, String>>> loadSupportLang() async {
-    final filePath = 'assets/l10n/support_langs.json';
+    const filePath = 'assets/l10n/support_langs.json';
     final jsonString = await rootBundle.loadString(filePath).catchError((e, st) {
       Log.error(e, st);
       return "{}";
@@ -28,7 +28,7 @@ class AppLangUtil {
       languages["ru"] = "Русский";
     }
 
-    return new Tuple(defaultLangCode, languages);
+    return Tuple(defaultLangCode, languages);
   }
 
   static Future<Map<String, String>> loadLocalizations() async {

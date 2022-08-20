@@ -3,14 +3,16 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_mold/localization/app_lang.dart';
 import 'package:flutter_mold/mold/mold_stateful_widget.dart';
 import 'package:flutter_mold/mold2/bundle.dart';
+import 'package:go_router/go_router.dart';
 
 class Window extends StatelessWidget {
   final Screen screen;
+  final GoRouterState screenState;
 
-  Window(this.screen);
+  Window(this.screen, this.screenState, {Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => new _WindowState(this, context);
+  Widget build(BuildContext context) => _WindowState(this, context);
 }
 
 // ignore: must_be_immutable
@@ -19,29 +21,45 @@ class _WindowState extends MoldStatefulWidget {
   final BuildContext windowContext;
 
   _WindowState(this.window, this.windowContext) {
-    this.window.screen._onAttachWindowState(this);
+    window.screen._onAttachWindowState(this);
   }
 
   @override
   void onCreate() {
     super.onCreate();
-    this.window.screen.onCreate();
+    window.screen.onCreate();
+  }
+
+  @override
+  void onChangeAppLifecycleState(AppLifecycleState state) {
+    window.screen.onChangeAppLifecycleState(state);
   }
 
   @override
   void onDestroy() {
-    this.window.screen.onDestroy();
+    window.screen.onDestroy();
     super.onDestroy();
   }
 
   @override
   Widget onCreateWidget(BuildContext context) {
-    return this.window.screen.onCreateWidget(this.windowContext);
+    return window.screen.onCreateWidget(windowContext);
   }
 }
 
 abstract class Screen {
   _WindowState? _windowState;
+
+  GoRouterState? get routeState => _windowState?.window.screenState;
+
+  /// The parameters for this sub-route, e.g. {'fid': 'f2'}
+  Map<String, String> get params => routeState!.params;
+
+  /// The query parameters for the location, e.g. {'from': '/family/f2'}
+  Map<String, String> get queryParams => routeState!.queryParams;
+
+  /// An extra object to pass along with the navigation.
+  Object? get extra => routeState!.extra;
 
   Bundle? get bundle {
     BuildContext? context = getContext();
@@ -53,15 +71,17 @@ abstract class Screen {
     }
   }
 
-  void onCreate() {}
-
   void _onAttachWindowState(_WindowState windowState) {
-    this._windowState = windowState;
+    _windowState = windowState;
   }
 
-  BuildContext? getContext() => this._windowState?.windowContext;
+  BuildContext? getContext() => _windowState?.windowContext;
 
   BuildContext requiredContext() => getContext()!;
+
+  void onCreate() {}
+
+  void onChangeAppLifecycleState(AppLifecycleState state) {}
 
   String getString(String code, {List<String>? args}) => code.translate(args: args);
 

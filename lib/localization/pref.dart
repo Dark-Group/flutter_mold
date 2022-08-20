@@ -3,22 +3,22 @@ import 'package:flutter_mold/preferences/pref.dart';
 class LocalizationPref {
   //------------------------------------------------------------------------------------------------
 
-  static final String MODULE = "mold_localization";
+  static const String module = "mold_localization";
 
   //------------------------------------------------------------------------------------------------
 
-  static final String APP_LANGUAGE = "app_language";
+  static const String appLanguage = "app_language";
 
   //------------------------------------------------------------------------------------------------
 
   static Future<String?> getLanguage() {
-    return Pref.load(MODULE, APP_LANGUAGE);
+    return Pref.load(module, appLanguage);
   }
 
   static Future<bool> setLanguage(String langCode) {
-    if (langCode == null || langCode.trim().isEmpty) {
-      throw new Exception("lang code is null or empty LangCode[$langCode]");
+    if (langCode.trim().isEmpty) {
+      throw Exception("lang code is null or empty LangCode[$langCode]");
     }
-    return Pref.save(MODULE, APP_LANGUAGE, langCode);
+    return Pref.save(module, appLanguage, langCode);
   }
 }

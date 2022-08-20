@@ -11,8 +11,10 @@ abstract class MoldStatefulWidget extends StatefulWidget {
   WidgetState? state;
   VoidCallback? _setState;
 
+  MoldStatefulWidget({Key? key}) : super(key: key);
+
   @override
-  _MoldStatefulWidgetState createState() => _MoldStatefulWidgetState();
+  MoldStatefulWidgetState createState() => MoldStatefulWidgetState();
 
   void _setContext(BuildContext context) {
     _context = context;
@@ -25,7 +27,7 @@ abstract class MoldStatefulWidget extends StatefulWidget {
   void onCreate() {}
 
   void reloadState() {
-    this._setState?.call();
+    _setState?.call();
   }
 
   void onChangeAppLifecycleState(AppLifecycleState state) {}
@@ -35,7 +37,7 @@ abstract class MoldStatefulWidget extends StatefulWidget {
   Widget onCreateWidget(BuildContext context);
 }
 
-class _MoldStatefulWidgetState extends State<MoldStatefulWidget> with WidgetsBindingObserver {
+class MoldStatefulWidgetState extends State<MoldStatefulWidget> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();

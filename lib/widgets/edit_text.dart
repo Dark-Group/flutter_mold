@@ -21,7 +21,9 @@ class GEditText extends MyWidget {
     TextInputType keyboardType = TextInputType.text,
     TextAlign textAlign = TextAlign.left,
     TextAlignVertical textAlignVertical = TextAlignVertical.center,
-    int? maxLines,
+    int? maxLines = 1,
+    int? minLines = 1,
+    int? maxLength,
     Widget? prefixIcon,
     Widget? suffixIcon,
     FormFieldValidator<String>? validator,
@@ -32,25 +34,27 @@ class GEditText extends MyWidget {
     this.enable = true,
     this.fillColor,
   }) {
-    this.block.width = width;
-    this.block.height = height;
-    this.block.text = text;
-    this.block.style = style;
-    this.block.enableObscure = enableObscure;
-    this.block.decoration = decoration;
-    this.block.hintText = hintText;
-    this.block.hintStyle = hintStyle;
-    this.block.keyboardType = keyboardType;
-    this.block.textAlign = textAlign;
-    this.block.textAlignVertical = textAlignVertical;
-    this.block.maxLines = maxLines;
-    this.block.prefixIcon = prefixIcon;
-    this.block.suffixIcon = suffixIcon;
-    this.block.validator = validator;
-    this.block.controller = controller;
-    this.block.padding = padding;
-    this.block.alignment = alignment;
-    this.block.flex = flex;
+    block.width = width;
+    block.height = height;
+    block.text = text;
+    block.style = style;
+    block.enableObscure = enableObscure;
+    block.decoration = decoration;
+    block.hintText = hintText;
+    block.hintStyle = hintStyle;
+    block.keyboardType = keyboardType;
+    block.textAlign = textAlign;
+    block.textAlignVertical = textAlignVertical;
+    block.maxLines = maxLines;
+    block.minLines = minLines;
+    block.maxLength = maxLength;
+    block.prefixIcon = prefixIcon;
+    block.suffixIcon = suffixIcon;
+    block.validator = validator;
+    block.controller = controller;
+    block.padding = padding;
+    block.alignment = alignment;
+    block.flex = flex;
   }
 
   @override
@@ -63,9 +67,11 @@ class GEditText extends MyWidget {
     // you should use ChangeNotifierProvider.value instead of the default constructor.
     //Failing to do so may dispose the ChangeNotifier when it is still in use.
     //you can read more complete this link: https://pub.dev/documentation/provider/latest/provider/ChangeNotifierProvider-class.html
-    return new ChangeNotifierProvider<GEditTextBloc>.value(
+    return ChangeNotifierProvider<GEditTextBloc>.value(
       value: block,
-      child: new Consumer<GEditTextBloc>(builder: (context, model, child) => _buildWidget(model)),
+      child: Consumer<GEditTextBloc>(
+        builder: (context, model, child) => _buildWidget(model),
+      ),
     );
   }
 
@@ -78,10 +84,10 @@ class GEditText extends MyWidget {
 
     widget = onExpandedWidget(widget, flex: bloc.flex);
 
-    return Container(
-      child: widget,
+    return SizedBox(
       width: block.width,
       height: block.height,
+      child: widget,
     );
   }
 
@@ -89,46 +95,53 @@ class GEditText extends MyWidget {
     var decorator = block.decoration ?? getDecorator(bloc);
 
     return TextFormField(
-      controller: this.block.controller,
-      validator: this.block.validator,
-      style: this.block.style,
-      obscureText: this.block.enableObscure,
-      textAlign: this.block.textAlign,
-      textAlignVertical: this.block.textAlignVertical,
+      controller: block.controller,
+      validator: block.validator,
+      style: block.style,
+      obscureText: block.enableObscure,
+      textAlign: block.textAlign,
+      textAlignVertical: block.textAlignVertical,
+      maxLines: block.maxLines,
+      minLines: block.minLines,
+      maxLength: block.maxLength,
       decoration: decorator,
     );
   }
 
   InputDecoration getDecorator(GEditTextBloc bloc) {
-    Widget? suffixIcon = this.block.suffixIcon;
-    if (this.block.keyboardType == TextInputType.visiblePassword) {
+    Widget? suffixIcon = block.suffixIcon;
+    if (block.keyboardType == TextInputType.visiblePassword) {
       suffixIcon = IconButton(
-        icon: Icon(block.enableObscure ? Icons.remove_red_eye_rounded : Icons.remove_red_eye_outlined),
+        icon: Icon(
+          block.enableObscure ? Icons.remove_red_eye_rounded : Icons.remove_red_eye_outlined,
+          size: 18,
+        ),
         onPressed: () => block.switchObscure(),
       );
     }
 
     return InputDecoration(
       border: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.black54, width: 0.5),
+        borderSide: const BorderSide(color: Colors.black54, width: 0.5),
         borderRadius: BorderRadius.circular(4.0),
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.black54, width: 0.5),
+        borderSide: const BorderSide(color: Colors.black54, width: 0.5),
         borderRadius: BorderRadius.circular(4.0),
       ),
       disabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.black54, width: 0.5),
+        borderSide: const BorderSide(color: Colors.black54, width: 0.5),
         borderRadius: BorderRadius.circular(4.0),
       ),
-      hintText: this.block.hintText,
-      hintStyle: this.block.hintStyle,
-      contentPadding: EdgeInsets.symmetric(horizontal: 16),
-      prefixIcon: this.block.prefixIcon,
+      hintText: block.hintText,
+      hintStyle: block.hintStyle,
+      isDense: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      prefixIcon: block.prefixIcon,
       suffixIcon: suffixIcon,
-      enabled: this.enable ?? true,
-      fillColor: this.fillColor,
-      filled: this.fillColor != null,
+      enabled: enable ?? true,
+      fillColor: fillColor,
+      filled: fillColor != null,
     );
   }
 }

@@ -6,98 +6,129 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_mold/localization/app_lang.dart';
-import 'package:flutter_mold/log/logger.dart';
-import 'package:flutter_mold/mold/mold_application.dart';
-import 'package:flutter_mold/mold/style.dart';
-import 'package:flutter_mold/mold2/bundle.dart';
-import 'package:flutter_mold/mold2/window.dart';
+import 'package:flutter_mold/flutter_mold.dart';
+import 'package:go_router/go_router.dart';
 
 class Mold {
-  static void startApplication(
-    MoldApplication application, {
+  static void startApplication(MoldApplication application, {
+    MoldChangeNotifier? notifier,
     List<NavigatorObserver> navigatorObservers = const <NavigatorObserver>[],
     Function? onError,
   }) {
-    runZonedGuarded(() {
+    runZonedGuarded(() async {
       WidgetsFlutterBinding.ensureInitialized();
-      runApp(
-        MoldApplicationWidget((_) {
-          return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-            final colors = MoldStyle.instance.color;
 
-            Future.delayed(Duration(milliseconds: 50))
-                .then((_) => SystemChrome.setSystemUIOverlayStyle(colors.systemStyle));
-            return getPlatformApp(application, colors, navigatorObservers);
-          });
-        }, application),
-      );
+      final changeNotifier = notifier ?? MoldChangeNotifier();
+      changeNotifier.initColor(color: await application.getColor());
+      changeNotifier.initTheme(theme: await application.getTheme());
+
+      await AppLang.instance.init();
+
+      final platformApp = getPlatformApp(application, changeNotifier, navigatorObservers);
+
+      runApp(MoldApplicationWidget(
+        platformApp,
+        application,
+        changeNotifier,
+      ));
     }, (error, st) {
       Log.error(error, st);
       onError?.call(error, st);
     });
   }
 
-  static StatefulWidget getPlatformApp(
-    MoldApplication application,
-    MoldColor color,
-    List<NavigatorObserver> navigatorObservers,
-  ) {
-    AppLang appLang = App.appLang;
+  static Widget getPlatformApp(MoldApplication application,
+      MoldChangeNotifier notifier,
+      List<NavigatorObserver> navigatorObservers,) {
+    final color = notifier.color;
+    final moldRoutes = application.getRoutes();
+    var goRouter = GoRouter(
+      routes: moldRoutes.map((e) {
+        return GoRoute(
+          name: e.name,
+          path: e.path,
+          builder: (context, screenState) => Window(e.builder.call(context), screenState),
+        );
+      }).toList(),
+      observers: navigatorObservers,
+      refreshListenable: notifier,
+      redirect: (state) {
+        Log.debug("State: ${state.location}, SubLoc: ${state.subloc}");
+        final redirectName = application.redirect(
+          MoldRouteState(state),
+          notifier,
+        );
+        if (redirectName == null) return null;
+
+        final moldRoute = moldRoutes.firstWhere((e) => e.name == redirectName);
+        print('Redirect: ${moldRoute.path}');
+        return moldRoute.path;
+      },
+    );
+
     if (kIsWeb) {
-      return MaterialApp(
+      return MaterialApp.router(
         theme: ThemeData(
           useMaterial3: true,
           brightness: color.brightness,
-          toggleableActiveColor: color.app_color,
+          toggleableActiveColor: color.appColor,
           colorScheme: ColorScheme.fromSwatch().copyWith(
             brightness: color.brightness,
-            secondary: color.app_color,
+            secondary: color.appColor,
           ),
         ),
-        routes: application.getRoutes(),
-        locale: appLang.getLocale(),
-        supportedLocales: appLang.getSupportLangs(),
-        navigatorObservers: navigatorObservers,
-        localizationsDelegates: [
+        //
+        routeInformationProvider: goRouter.routeInformationProvider,
+        routeInformationParser: goRouter.routeInformationParser,
+        routerDelegate: goRouter.routerDelegate,
+        //
+        locale: AppLang.instance.getLocale(),
+        supportedLocales: AppLang.instance.getSupportLangs(),
+        localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
       );
     } else if (Platform.isIOS) {
-      return CupertinoApp(
+      return CupertinoApp.router(
         theme: CupertinoThemeData(
           brightness: color.brightness,
-          primaryColor: color.app_color,
-          primaryContrastingColor: color.app_color,
+          primaryColor: color.appColor,
+          primaryContrastingColor: color.appColor,
         ),
-        routes: application.getRoutes(),
-        locale: appLang.getLocale(),
-        supportedLocales: appLang.getSupportLangs(),
-        navigatorObservers: navigatorObservers,
-        localizationsDelegates: [
+        //
+        routeInformationProvider: goRouter.routeInformationProvider,
+        routeInformationParser: goRouter.routeInformationParser,
+        routerDelegate: goRouter.routerDelegate,
+        //
+        locale: AppLang.instance.getLocale(),
+        supportedLocales: AppLang.instance.getSupportLangs(),
+        localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
       );
     } else {
-      return MaterialApp(
+      return MaterialApp.router(
         theme: ThemeData(
           useMaterial3: true,
           brightness: color.brightness,
-          toggleableActiveColor: color.app_color,
+          toggleableActiveColor: color.appColor,
           colorScheme: ColorScheme.fromSwatch().copyWith(
             brightness: color.brightness,
-            secondary: color.app_color,
+            secondary: color.appColor,
           ),
         ),
-        routes: application.getRoutes(),
-        locale: appLang.getLocale(),
-        supportedLocales: appLang.getSupportLangs(),
-        navigatorObservers: navigatorObservers,
-        localizationsDelegates: [
+        //
+        routeInformationProvider: goRouter.routeInformationProvider,
+        routeInformationParser: goRouter.routeInformationParser,
+        routerDelegate: goRouter.routerDelegate,
+        //
+        locale: AppLang.instance.getLocale(),
+        supportedLocales: AppLang.instance.getSupportLangs(),
+        localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
@@ -106,47 +137,90 @@ class Mold {
     }
   }
 
-  static Widget newInstance(Object content) {
-    if (content is Screen) {
-      return new Window(content);
-    } else {
-      throw new UnsupportedError("cannot create instance content type unsupported");
+  static void openContent<R>(BuildContext context,
+      String routeName, {
+        Bundle? bundle,
+        Map<String, String?> params = const <String, String>{},
+        Map<String, String?> queryParams = const <String, String>{},
+        Object? extra,
+      }) {
+    if (bundle != null && (params.isNotEmpty || queryParams.isNotEmpty)) {
+      throw Exception("when using bundle don't use 'params' or 'queryParams'");
     }
+
+    Map<String, String> mParams = {};
+    params.forEach((key, value) {
+      if (value?.isNotEmpty == true) mParams[key] = value!;
+    });
+    Map<String, String> mQueryParams = {};
+    queryParams.forEach((key, value) {
+      if (value?.isNotEmpty == true) mQueryParams[key] = value!;
+    });
+
+    // generate param & query via bundle data
+    if (bundle != null) {
+      var bundleData = bundle.getData();
+      for (var key in bundleData.keys) {
+        if (!routeName.contains("/:$key")) {
+          continue;
+        }
+        mParams[key] = bundleData[key]!;
+        bundleData.remove(key);
+      }
+      mQueryParams.addAll(bundleData);
+    }
+
+    final route = context.namedLocation(
+      routeName,
+      params: mParams,
+      queryParams: mQueryParams,
+    );
+    GoRouter.of(context).push(route, extra: extra);
   }
 
-  static void openContent<R>(
-    BuildContext context,
-    dynamic content, {
-    Bundle? bundle,
-    void Function(R? result)? onPopResult,
-  }) {
-    Bundle? argumentBundle = bundle ??= Bundle.newBundle(context);
+  static void replaceContent<R>(BuildContext context,
+      String routeName, {
+        Bundle? bundle,
+        Map<String, String?> params = const <String, String>{},
+        Map<String, String?> queryParams = const <String, String>{},
+        Object? extra,
+      }) {
+    if (bundle != null && (params.isNotEmpty || queryParams.isNotEmpty)) {
+      throw Exception("when using bundle don't use 'params' or 'queryParams'");
+    }
 
-    Navigator.pushNamed(
-      context,
-      content,
-      arguments: argumentBundle,
-    ).then((value) => onPopResult?.call(value as R?));
+    Map<String, String> mParams = {};
+    params.forEach((key, value) {
+      if (value != null) mParams[key] = value;
+    });
+    Map<String, String> mQueryParams = {};
+    queryParams.forEach((key, value) {
+      if (value != null) mQueryParams[key] = value;
+    });
+
+    // generate param & query via bundle data
+    if (bundle != null) {
+      var bundleData = bundle.getData();
+      for (var key in bundleData.keys) {
+        if (!routeName.contains("/:$key")) {
+          continue;
+        }
+        mParams[key] = bundleData[key]!;
+        bundleData.remove(key);
+      }
+      mQueryParams.addAll(bundleData);
+    }
+
+    final route = GoRouter.of(context).namedLocation(
+      routeName,
+      params: mParams,
+      queryParams: mQueryParams,
+    );
+    GoRouter.of(context).replace(route, extra: extra);
   }
 
-  static void replaceContent<R>(
-    BuildContext context,
-    dynamic content, {
-    Bundle? bundle,
-    void Function(R? result)? onPopResult,
-  }) {
-    Bundle? argumentBundle = bundle ??= Bundle.newBundle(context);
-
-   Navigator.pushNamedAndRemoveUntil(
-      context,
-      content,
-      (routes) => false,
-      arguments: argumentBundle,
-    ).then((value) => onPopResult?.call(value as R?));
-  }
-
-  static void onBackPressed<T extends Object>(BuildContext context, [T? result]) {
-    Navigator.pop<T>(context, result);
+  static void onBackPressed<T extends Object>(BuildContext context) {
+    GoRouter.of(context).pop();
   }
 
   static void hideKeyboard() {
