@@ -1,185 +1,118 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mold/common/lazy_stream.dart';
 import 'package:flutter_mold/localization/app_lang.dart';
-import 'package:flutter_mold/mold/mold_stateful_widget.dart';
 import 'package:flutter_mold/mold/style.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_mold/mold2/window.dart';
+import 'package:go_router/go_router.dart';
 
 typedef BuildWidget = Widget Function(BuildContext context);
 
+typedef ScreenBuilder = Screen Function(BuildContext context);
+
+class MoldRoute {
+  final String? name;
+  final String path;
+  final ScreenBuilder builder;
+
+  MoldRoute({this.name, required this.path, required this.builder});
+}
+
+class MoldRouteState {
+  final GoRouterState routerState;
+
+  MoldRouteState(this.routerState);
+
+  String get location => routerState.location;
+
+  String get subloc => routerState.subloc;
+
+  String? get name => routerState.name;
+
+  String? get path => routerState.path;
+
+  String? get fullPath => routerState.fullpath;
+}
+
 abstract class MoldApplication {
-  MoldApplicationWidget? _applicationWidget;
-
-  void _onInit(MoldApplicationWidget applicationWidget) {
-    this._applicationWidget = applicationWidget;
+  Future<MoldColor?> getColor() {
+    return Future.value(null);
   }
 
-  bool isInit() => _applicationWidget != null;
-
-  BuildContext? get applicationContext => isInit() ? _applicationWidget!.getContext() : null;
-
-  void onCreate() {
-    assert(isInit());
+  Future<MoldTheme?> getTheme() {
+    return Future.value(null);
   }
+
+  void onCreate() {}
 
   void onDestroy() {}
 
-  Future<MoldColor> getColor() {
-    return Future<MoldColor>.value(null);
-  }
-
-  Future<MoldTheme> getTheme() {
-    return Future<MoldTheme>.value(null);
-  }
-
-  Map<String, WidgetBuilder> getRoutes();
+  List<MoldRoute> getRoutes();
 
   Map<String, String> getTranslates(String langCode) {
     return <String, String>{
-      "gwslib:date_util:hour": "%1s ч",
-      "gwslib:date_util:minute": "%1s мин",
-      "gwslib:date_util:hour_minute": "%1s ч %2s мин",
-      "gwslib:error:error_conection_fail": "Нет соединения с интернетом (connection fail)",
-      "gwslib:error:error_conection_refused": "Нет соединения с интернетом (connection refused)",
-      "gwslib:error:error_http_not_found": "Нет соединения с интернетом (http not found)",
-      "gwslib:error:error_connection_timeout": "Скорость интернета низкая или нет подключения (connection timeout)",
-      "gwslib:error:error_incorrect_login_or_password": "Неверный логин или пароль ",
-      "gwslib:spinner_option:not_selected": "Не выбран",
+      "mold:date_util:hour": "%1s ч",
+      "mold:date_util:minute": "%1s мин",
+      "mold:date_util:hour_minute": "%1s ч %2s мин",
+      "mold:error:error_conection_fail": "Нет соединения с интернетом (connection fail)",
+      "mold:error:error_conection_refused": "Нет соединения с интернетом (connection refused)",
+      "mold:error:error_http_not_found": "Нет соединения с интернетом (http not found)",
+      "mold:error:error_connection_timeout": "Скорость интернета низкая или нет подключения (connection timeout)",
+      "mold:error:error_incorrect_login_or_password": "Неверный логин или пароль ",
+      "mold:spinner_option:not_selected": "Не выбран",
     };
   }
+
+  String? redirect(MoldRouteState state, MoldChangeNotifier notifier) {
+    return null;
+  }
 }
 
-class MoldApplicationWidget extends StatelessWidget {
-  static MoldApplicationWidget? _applicationWidget;
-  BuildContext? _context;
-
-  void _setContext(BuildContext context) {
-    _context = context;
-  }
-
-  BuildContext? getContext() => _context;
-
-  BuildContext requiredContext() => getContext()!;
-
-  static MoldApplicationWidget getInstance() {
-    return _applicationWidget!;
-  }
-
+class MoldApplicationWidget extends InheritedNotifier<MoldChangeNotifier> {
   final MoldApplication application;
-  final BuildWidget buildChildWidget;
 
-  MoldApplicationWidget(this.buildChildWidget, this.application) {
-    _applicationWidget = this;
-  }
+  const MoldApplicationWidget(
+    Widget child,
+    this.application,
+    MoldChangeNotifier notifier, {
+    Key? key,
+  }) : super(key: key, notifier: notifier, child: child);
 
-  final LazyStream<bool> reloadScreen = LazyStream(() => false);
-
-  bool isWaitReloadScreen = false;
-
-  void runReloadScreen() {
-    if (isWaitReloadScreen) return;
-    isWaitReloadScreen = true;
-
-    Future.delayed(const Duration(milliseconds: 1000), () {
-      reloadScreen.add(true);
-    });
-  }
-
-  void initStyle() async {
-    if (MoldStyle.instance.isInit == true) {
-      return;
-    }
-    MoldStyle.instance.initColor();
-
-    final appColor = await application.getColor();
-    print('AppColor: $appColor');
-    MoldStyle.instance.initColor(color: appColor);
-
-    final appTheme = await application.getTheme();
-    print('AppTheme: $appTheme');
-    MoldStyle.instance.initTheme(theme: appTheme);
-
-    App.notify();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    _setContext(context);
-
-    if (!application.isInit()) {
-      application._onInit(this);
-      application.onCreate();
-    }
-
-    if (!AppLang.instance.isInit) {
-      AppLang.instance.onGetTranslate = application.getTranslates;
-      AppLang.instance.init();
-    }
-
-    initStyle();
-
-    runReloadScreen();
-
-    return StreamBuilder<bool?>(
-        stream: reloadScreen.stream,
-        initialData: reloadScreen.value,
-        builder: (_, st) {
-          if (st.data != true) {
-            return Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: Colors.white,
-            );
-          }
-          return _AppState(this);
-        });
-  }
+  static MoldChangeNotifier of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<MoldApplicationWidget>()!.notifier!;
 }
 
-class _AppState extends MoldStatefulWidget {
-  MoldApplicationWidget appWidget;
+class MoldChangeNotifier extends ChangeNotifier {
+  static MoldChangeNotifier? _instance;
 
-  _AppState(this.appWidget);
+  static MoldColor getColor() => _instance!.color;
 
-  @override
-  void onChangeAppLifecycleState(AppLifecycleState state) {
-    super.onChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.detached) {
-      appWidget.application.onDestroy();
-    }
-  }
-
-  @override
-  Widget onCreateWidget(BuildContext context) {
-    return ChangeNotifierProvider<_AppChangeProvider>(
-      create: (_) => _AppChangeProvider.instance,
-      child: Consumer<_AppChangeProvider>(builder: (context, model, child) {
-        if (!model.isInit) return Container();
-        return appWidget.buildChildWidget.call(context);
-      }),
-    );
-  }
-}
-
-class App {
-  static void notify() {
-    _AppChangeProvider.instance.notify();
-  }
-
-  static AppLang get appLang => _AppChangeProvider.instance.appLang;
-}
-
-class _AppChangeProvider extends ChangeNotifier {
-  static final _AppChangeProvider instance = _AppChangeProvider();
+  static MoldTheme getTheme() => _instance!.theme;
 
   final AppLang appLang = AppLang.instance;
 
-  final MoldStyle style = MoldStyle.instance;
+  MoldChangeNotifier() {
+    _instance = this;
+  }
 
-  bool get isInit => appLang.isInit && style.isInit;
+  Future<void> changeLanguage(String langCode) async {
+    appLang.changeLanguage(langCode);
+    notifyListeners();
+  }
 
-  void notify() {
-    super.notifyListeners();
+  MoldColor? _color;
+  MoldTheme? _theme;
+
+  MoldColor get color => _color!;
+
+  MoldTheme get theme => _theme!;
+
+  void initColor({MoldColor? color}) {
+    _color = color ?? MoldColor();
+    notifyListeners();
+  }
+
+  void initTheme({MoldTheme? theme}) {
+    _theme = theme ?? MoldTheme();
+    notifyListeners();
   }
 }

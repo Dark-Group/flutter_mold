@@ -2,28 +2,19 @@ import 'package:flutter/widgets.dart';
 
 class Bundle {
   static Bundle newBundle(BuildContext context, [Map<String, dynamic>? arguments]) {
-    dynamic argument = ModalRoute.of(context)?.settings.arguments;
-    Bundle? lastBundle;
-    if (argument?.runtimeType == Bundle) {
-      lastBundle = argument as Bundle;
-    }
-
-    final bundle = new Bundle._(lastBundle);
+    final bundle = new Bundle._();
     if (arguments != null && arguments.isNotEmpty) {
       arguments.forEach((key, value) => bundle.put(key, value));
     }
     return bundle;
   }
 
-  final Bundle? _lastBundle;
   final Map<String, dynamic> _bundle;
 
-  Bundle._(Bundle? lastBundle)
-      : this._lastBundle = lastBundle,
-        this._bundle = <String, dynamic>{};
+  Bundle._() : _bundle = <String, dynamic>{};
 
   Bundle put(String key, dynamic value) {
-    this._bundle[key] = value;
+    _bundle[key] = value;
     return this;
   }
 
@@ -34,10 +25,10 @@ class Bundle {
   Bundle putObject(String key, dynamic value) => this.put(key, value);
 
   dynamic get(String key) {
-    if (this._bundle.containsKey(key)) {
-      return this._bundle[key];
+    if (_bundle.containsKey(key)) {
+      return _bundle[key];
     }
-    return this._lastBundle?.get(key) ?? null;
+    return null;
   }
 
   String? getString(String key) => get(key)?.toString();
@@ -45,4 +36,13 @@ class Bundle {
   R? getObject<R>(String key) => (get(key) as R);
 
   int? getInt(String key) => get(key);
+
+  Map<String, String> getData() {
+    Map<String, String> result = {};
+
+    var bundleData = _bundle.map((key, value) => MapEntry(key, value.toString()));
+    result.addAll(bundleData);
+
+    return result;
+  }
 }
