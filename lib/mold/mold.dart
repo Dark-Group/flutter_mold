@@ -10,7 +10,8 @@ import 'package:flutter_mold/flutter_mold.dart';
 import 'package:go_router/go_router.dart';
 
 class Mold {
-  static void startApplication(MoldApplication application, {
+  static void startApplication(
+    MoldApplication application, {
     MoldChangeNotifier? notifier,
     List<NavigatorObserver> navigatorObservers = const <NavigatorObserver>[],
     Function? onError,
@@ -37,13 +38,19 @@ class Mold {
     });
   }
 
-  static Widget getPlatformApp(MoldApplication application,
-      MoldChangeNotifier notifier,
-      List<NavigatorObserver> navigatorObservers,) {
+  static Widget getPlatformApp(
+    MoldApplication application,
+    MoldChangeNotifier notifier,
+    List<NavigatorObserver> navigatorObservers,
+  ) {
     final color = notifier.color;
-    final moldRoutes = application.getRoutes();
+    Map<String, MoldRoute> dataRoutes = {};
+    application.getRoutes().forEach((route) {
+      dataRoutes[route.name] = route;
+    });
     var goRouter = GoRouter(
-      routes: moldRoutes.map((e) {
+      initialLocation: "/",
+      routes: dataRoutes.values.map((e) {
         return GoRoute(
           name: e.name,
           path: e.path,
@@ -60,7 +67,10 @@ class Mold {
         );
         if (redirectName == null) return null;
 
-        final moldRoute = moldRoutes.firstWhere((e) => e.name == redirectName);
+        final moldRoute = dataRoutes[redirectName];
+        if (moldRoute == null) {
+          throw Exception("page not found, redirect 404 page");
+        }
         print('Redirect: ${moldRoute.path}');
         return moldRoute.path;
       },
@@ -77,6 +87,7 @@ class Mold {
             secondary: color.appColor,
           ),
         ),
+        debugShowCheckedModeBanner: false,
         //
         routeInformationProvider: goRouter.routeInformationProvider,
         routeInformationParser: goRouter.routeInformationParser,
@@ -97,6 +108,7 @@ class Mold {
           primaryColor: color.appColor,
           primaryContrastingColor: color.appColor,
         ),
+        debugShowCheckedModeBanner: false,
         //
         routeInformationProvider: goRouter.routeInformationProvider,
         routeInformationParser: goRouter.routeInformationParser,
@@ -121,6 +133,7 @@ class Mold {
             secondary: color.appColor,
           ),
         ),
+        debugShowCheckedModeBanner: false,
         //
         routeInformationProvider: goRouter.routeInformationProvider,
         routeInformationParser: goRouter.routeInformationParser,
@@ -137,13 +150,14 @@ class Mold {
     }
   }
 
-  static void openContent<R>(BuildContext context,
-      String routeName, {
-        Bundle? bundle,
-        Map<String, String?> params = const <String, String>{},
-        Map<String, String?> queryParams = const <String, String>{},
-        Object? extra,
-      }) {
+  static void openContent<R>(
+    BuildContext context,
+    String routeName, {
+    Bundle? bundle,
+    Map<String, String?> params = const <String, String>{},
+    Map<String, String?> queryParams = const <String, String>{},
+    Object? extra,
+  }) {
     if (bundle != null && (params.isNotEmpty || queryParams.isNotEmpty)) {
       throw Exception("when using bundle don't use 'params' or 'queryParams'");
     }
@@ -178,13 +192,14 @@ class Mold {
     GoRouter.of(context).push(route, extra: extra);
   }
 
-  static void replaceContent<R>(BuildContext context,
-      String routeName, {
-        Bundle? bundle,
-        Map<String, String?> params = const <String, String>{},
-        Map<String, String?> queryParams = const <String, String>{},
-        Object? extra,
-      }) {
+  static void replaceContent<R>(
+    BuildContext context,
+    String routeName, {
+    Bundle? bundle,
+    Map<String, String?> params = const <String, String>{},
+    Map<String, String?> queryParams = const <String, String>{},
+    Object? extra,
+  }) {
     if (bundle != null && (params.isNotEmpty || queryParams.isNotEmpty)) {
       throw Exception("when using bundle don't use 'params' or 'queryParams'");
     }
@@ -221,6 +236,10 @@ class Mold {
 
   static void onBackPressed<T extends Object>(BuildContext context) {
     GoRouter.of(context).pop();
+  }
+
+  static bool canPop(BuildContext context) {
+    return GoRouter.of(context).canPop();
   }
 
   static void hideKeyboard() {

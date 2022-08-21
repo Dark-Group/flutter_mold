@@ -86,11 +86,11 @@ class Util {
     return result;
   }
 
-  static String getString(Map<String, dynamic> data, String key, {String? defaultValue}) {
+  static String? getString(Map<String, dynamic> data, String key, {String? defaultValue}) {
     return get(data, key, defaultValue: defaultValue);
   }
 
-  static int getInt(Map<String, dynamic> data, String key, {int? defaultValue}) {
+  static int? getInt(Map<String, dynamic> data, String key, {int? defaultValue}) {
     return get(data, key, defaultValue: defaultValue);
   }
 

@@ -126,9 +126,9 @@ extension StringExtentions on String {
 
 extension ListExtensions<T> on Iterable<T> {
   List<R> mapNotNullTo<R, C extends List<R>>(C destination, R? transform(T)) {
-    this.forEach((element) {
+    for (var element in this) {
       transform.call(element)?.let((it) => (destination).add(it as R));
-    });
+    }
     return destination;
   }
 

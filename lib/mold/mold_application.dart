@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mold/localization/app_lang.dart';
-import 'package:flutter_mold/mold/style.dart';
-import 'package:flutter_mold/mold2/window.dart';
+import 'package:flutter_mold/flutter_mold.dart';
 import 'package:go_router/go_router.dart';
 
 typedef BuildWidget = Widget Function(BuildContext context);
@@ -10,11 +8,11 @@ typedef BuildWidget = Widget Function(BuildContext context);
 typedef ScreenBuilder = Screen Function(BuildContext context);
 
 class MoldRoute {
-  final String? name;
+  final String name;
   final String path;
   final ScreenBuilder builder;
 
-  MoldRoute({this.name, required this.path, required this.builder});
+  MoldRoute({required this.name, required this.path, required this.builder});
 }
 
 class MoldRouteState {
