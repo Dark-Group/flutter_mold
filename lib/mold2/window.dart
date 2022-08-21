@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_mold/localization/app_lang.dart';
-import 'package:flutter_mold/mold/mold_stateful_widget.dart';
-import 'package:flutter_mold/mold2/bundle.dart';
+import 'package:flutter_mold/flutter_mold.dart';
 import 'package:go_router/go_router.dart';
 
 class Window extends StatelessWidget {
@@ -55,8 +53,16 @@ abstract class Screen {
   /// The parameters for this sub-route, e.g. {'fid': 'f2'}
   Map<String, String> get params => routeState!.params;
 
+  String? getParam(String key) {
+    return params.containsKey(key) ? params[key] : null;
+  }
+
   /// The query parameters for the location, e.g. {'from': '/family/f2'}
   Map<String, String> get queryParams => routeState!.queryParams;
+
+  String? getQueryParam(String key) {
+    return queryParams.containsKey(key) ? queryParams[key] : null;
+  }
 
   /// An extra object to pass along with the navigation.
   Object? get extra => routeState!.extra;
