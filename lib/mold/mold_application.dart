@@ -12,7 +12,11 @@ class MoldRoute {
   final String path;
   final ScreenBuilder builder;
 
-  MoldRoute({required this.name, required this.path, required this.builder});
+  MoldRoute({required this.name, required this.path, required this.builder}){
+    if (name.startsWith("/") || name.endsWith("/")){
+      throw Exception("route name '$name' is wrong");
+    }
+  }
 }
 
 class MoldRouteState {

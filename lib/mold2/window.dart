@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 
 class Window extends StatelessWidget {
   final Screen screen;
-  final GoRouterState screenState;
+  final GoRouterState? screenState;
 
   Window(this.screen, this.screenState, {Key? key}) : super(key: key);
 
