@@ -154,8 +154,8 @@ class Mold {
     BuildContext context,
     String routeName, {
     Bundle? bundle,
-    Map<String, String?> params = const <String, String>{},
-    Map<String, String?> queryParams = const <String, String>{},
+    Map<String, dynamic> params = const <String, dynamic>{},
+    Map<String, dynamic> queryParams = const <String, dynamic>{},
     Object? extra,
   }) {
     if (bundle != null && (params.isNotEmpty || queryParams.isNotEmpty)) {
@@ -164,11 +164,11 @@ class Mold {
 
     Map<String, String> mParams = {};
     params.forEach((key, value) {
-      if (value?.isNotEmpty == true) mParams[key] = value!;
+      if (value?.toString().isNotEmpty == true) mParams[key] = value!.toString();
     });
     Map<String, String> mQueryParams = {};
     queryParams.forEach((key, value) {
-      if (value?.isNotEmpty == true) mQueryParams[key] = value!;
+      if (value?.toString().isNotEmpty == true) mQueryParams[key] = value!.toString();
     });
 
     // generate param & query via bundle data
@@ -192,12 +192,23 @@ class Mold {
     GoRouter.of(context).push(route, extra: extra);
   }
 
+  static Future<R?> openContentWithResult<R>(
+    BuildContext context,
+    MoldRoute route, {
+    Bundle? bundle,
+  }) {
+    return Navigator.of(context).push<R>(MaterialPageRoute(
+      builder: (context) => Window(route.builder.call(context), null),
+      settings: RouteSettings(name: route.name, arguments: bundle),
+    ));
+  }
+
   static void replaceContent<R>(
     BuildContext context,
     String routeName, {
     Bundle? bundle,
-    Map<String, String?> params = const <String, String>{},
-    Map<String, String?> queryParams = const <String, String>{},
+    Map<String, dynamic> params = const <String, dynamic>{},
+    Map<String, dynamic> queryParams = const <String, dynamic>{},
     Object? extra,
   }) {
     if (bundle != null && (params.isNotEmpty || queryParams.isNotEmpty)) {
@@ -206,11 +217,11 @@ class Mold {
 
     Map<String, String> mParams = {};
     params.forEach((key, value) {
-      if (value != null) mParams[key] = value;
+      if (value?.toString().isNotEmpty == true) mParams[key] = value.toString();
     });
     Map<String, String> mQueryParams = {};
     queryParams.forEach((key, value) {
-      if (value != null) mQueryParams[key] = value;
+      if (value?.toString().isNotEmpty == true) mQueryParams[key] = value.toString();
     });
 
     // generate param & query via bundle data
@@ -234,8 +245,16 @@ class Mold {
     GoRouter.of(context).replace(route, extra: extra);
   }
 
-  static void onBackPressed<T extends Object>(BuildContext context) {
-    GoRouter.of(context).pop();
+  static void onBackPressed<T extends Object>(BuildContext context, [Object? result]) {
+    if (result != null) {
+      Navigator.of(context).pop(result);
+    } else {
+      GoRouter.of(context).pop();
+    }
+  }
+
+  static void dismiss(BuildContext context) {
+    Navigator.of(context).pop();
   }
 
   static bool canPop(BuildContext context) {

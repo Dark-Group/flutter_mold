@@ -220,7 +220,7 @@ class GEditTextBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  TextEditingController? get controller => _controller ?? TextEditingController(text: this.text);
+  TextEditingController? get controller => _controller;
 
   //------------------------------------------------------------------------------------------------
   // Padding
