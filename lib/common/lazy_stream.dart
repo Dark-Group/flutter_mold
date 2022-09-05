@@ -8,6 +8,7 @@ class LazyStream<E> {
 
   LazyStream([OnInitStream<E?>? onInitStream]) {
     this._onInitStream = nvl(onInitStream, _onInitStream);
+    get();
   }
 
   BehaviorSubject<E?>? _element;

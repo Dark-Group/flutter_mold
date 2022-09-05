@@ -28,16 +28,16 @@ class DateUtil {
 
   static final Getter<DateFormat> DAY_WEEK = new Getter(() => DateFormat("EE", AppLang.getInstance().getLangCode()));
   static final Getter<DateFormat> FORMAT_DD_MMMM_YYYY_EEE =
-      new Getter(() => DateFormat("dd MMMM yyyy (EEE)", AppLang.getInstance().getLangCode()));
+  new Getter(() => DateFormat("dd MMMM yyyy (EEE)", AppLang.getInstance().getLangCode()));
   static final Getter<DateFormat> FORMAT_DD_MMMM_YYYY =
-      new Getter(() => DateFormat("dd MMMM yyyy", AppLang.getInstance().getLangCode()));
+  new Getter(() => DateFormat("dd MMMM yyyy", AppLang.getInstance().getLangCode()));
   static final Getter<DateFormat> DAY_MONTH =
-      new Getter(() => DateFormat("dd MMMM", AppLang.getInstance().getLangCode()));
+  new Getter(() => DateFormat("dd MMMM", AppLang.getInstance().getLangCode()));
   static final Getter<DateFormat> DAY_MONTH_SHORT =
-      new Getter(() => DateFormat("dd MMM", AppLang.getInstance().getLangCode()));
+  new Getter(() => DateFormat("dd MMM", AppLang.getInstance().getLangCode()));
 
   static final Getter<DateFormat> TIME_DAY_MONTH_SHORT =
-      new Getter((() => DateFormat("HH:mm, dd MMM", AppLang.getInstance().getLangCode())));
+  new Getter((() => DateFormat("HH:mm, dd MMM", AppLang.getInstance().getLangCode())));
   static final Getter<DateFormat> TIME_DAY = new Getter((() => DateFormat("HH:mm, dd")));
 
   static DateTime today() {
@@ -67,16 +67,6 @@ class DateUtil {
   static DateTime switchDateTime(DateTime dateTime, int toMonth) {
     DateTime newDate = DateTime(dateTime.year, dateTime.month + toMonth, dateTime.day);
     return newDate;
-  }
-
-  static String getTimeHour(String time) {
-    if (time == null || time.isEmpty) {
-      return "00";
-    }
-    final minutes = int.parse(time);
-    final String hours = minutes ~/ 60 > 9 ? (minutes ~/ 60).toString() : "0" + (minutes ~/ 60).toString();
-    final String min = minutes % 60 > 9 ? (minutes % 60).toString() : "0" + (minutes % 60).toString();
-    return hours + ":" + min;
   }
 
   ///@nullable
@@ -177,6 +167,27 @@ class DateUtil {
     } catch (error, st) {
       Log.error("Error($error)\n$st");
       return s;
+    }
+  }
+
+  static String getTimeHour(int? minutes) {
+    if (minutes == null || minutes <= 0) {
+      return "00:00";
+    }
+    final String hours = minutes ~/ 60 > 9 ? (minutes ~/ 60).toString() : "0${minutes ~/ 60}";
+    final String min = minutes % 60 > 9 ? (minutes % 60).toString() : "0${minutes % 60}";
+    return "$hours:$min";
+  }
+
+  static int convertToMinute(String? s) {
+    try {
+      if (s == null || s.length == 0) return 0;
+      if (!s.contains(":")) return int.parse(s);
+      var split = s.split(":");
+      return (int.parse(split[0]) * 60) + (int.parse(split[1]));
+    } catch (error, st) {
+      Log.error("Error($error)\n$st");
+      return 0;
     }
   }
 
