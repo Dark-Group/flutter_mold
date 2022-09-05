@@ -60,6 +60,10 @@ class SpinnerValue {
       }
     }
   }
+
+  void setValue(String code){
+    value = options.firstWhere((e) => e.code == code);
+  }
 }
 
 class SpinnerOption {

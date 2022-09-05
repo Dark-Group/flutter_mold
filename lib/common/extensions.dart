@@ -136,6 +136,11 @@ extension ListExtensions<T> on Iterable<T> {
     return this.mapNotNullTo<R, List<R>>(<R>[], transform);
   }
 
+  Iterable<R> mapByIndex<R>(R Function(int index, T element) transform) {
+    int index = 0;
+    return map((e) => transform.call(index++, e));
+  }
+
   List<K?> mapList<K>(K? Function(T element) transform) {
     return this.map(transform).toList();
   }
@@ -150,7 +155,24 @@ extension ListExtensions<T> on Iterable<T> {
   }
 
   T? lastWhereOrNull(bool test(T element)) {
-    final result = this.where(test);
+    final result = where(test);
     return result.isEmpty ? null : result.last;
+  }
+
+  bool hasVariousItems() {
+    T? last;
+    for (T r in this) {
+      if (last != null && last != r) {
+        return true;
+      }
+      last = r;
+    }
+    return false;
+  }
+}
+
+extension ListNullableExtensions<T> on Iterable<T?> {
+  List<T> filterNotNull() {
+    return where((e) => e != null).toList() as List<T>;
   }
 }

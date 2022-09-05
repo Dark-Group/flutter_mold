@@ -137,14 +137,14 @@ void main() {
 
   group("test  getTimeHour function", () {
     test("test when time is empty", () {
-      expect(DateUtil.getTimeHour(""), equals("00"));
+      expect(DateUtil.getTimeHour(null), equals("00:00"));
     });
 
     test("test with normal time", () {
-      expect(DateUtil.getTimeHour("375"), equals("06:15"));
+      expect(DateUtil.getTimeHour(375), equals("06:15"));
     });
     test("test with normal time", () {
-      expect(DateUtil.getTimeHour("675"), equals("11:15"));
+      expect(DateUtil.getTimeHour(675), equals("11:15"));
     });
   });
 

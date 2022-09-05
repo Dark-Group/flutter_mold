@@ -15,6 +15,9 @@ class VariableText {
       controller.removeListener(variable._controllerListener!);
       variable._controllerListener = null;
     }
+
+    controller.text = variable.getText();
+
     variable._controllerListener = () {
       variable.setText(controller.text);
     };
