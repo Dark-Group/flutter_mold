@@ -59,7 +59,7 @@ class Mold {
       }).toList(),
       observers: navigatorObservers,
       refreshListenable: notifier,
-      redirect: (state) {
+      redirect: (context, state) {
         Log.debug("State: ${state.location}, SubLoc: ${state.subloc}");
         final redirectName = application.redirect(
           MoldRouteState(state),
@@ -71,7 +71,7 @@ class Mold {
         if (moldRoute == null) {
           throw Exception("page not found, redirect 404 page");
         }
-        print('Redirect: ${moldRoute.path}');
+        Log.debug('Redirect: ${moldRoute.path}');
         return moldRoute.path;
       },
     );
@@ -150,13 +150,12 @@ class Mold {
     }
   }
 
-  static void openContent<R>(
+  static String namedLocation(
     BuildContext context,
     String routeName, {
     Bundle? bundle,
     Map<String, dynamic> params = const <String, dynamic>{},
     Map<String, dynamic> queryParams = const <String, dynamic>{},
-    Object? extra,
   }) {
     if (bundle != null && (params.isNotEmpty || queryParams.isNotEmpty)) {
       throw Exception("when using bundle don't use 'params' or 'queryParams'");
@@ -183,13 +182,25 @@ class Mold {
       }
       mQueryParams.addAll(bundleData);
     }
-
-    final route = context.namedLocation(
+    return context.namedLocation(
       routeName,
       params: mParams,
       queryParams: mQueryParams,
     );
-    GoRouter.of(context).push(route, extra: extra);
+  }
+
+  static void openContent(
+    BuildContext context,
+    String routeName, {
+    Bundle? bundle,
+    Map<String, dynamic> params = const <String, dynamic>{},
+    Map<String, dynamic> queryParams = const <String, dynamic>{},
+    Object? extra,
+  }) {
+    GoRouter.of(context).push(
+      namedLocation(context, routeName, bundle: bundle, params: params, queryParams: queryParams),
+      extra: extra,
+    );
   }
 
   static Future<R?> openContentWithResult<R>(
@@ -203,7 +214,7 @@ class Mold {
     ));
   }
 
-  static void replaceContent<R>(
+  static void replaceContent(
     BuildContext context,
     String routeName, {
     Bundle? bundle,
@@ -211,38 +222,24 @@ class Mold {
     Map<String, dynamic> queryParams = const <String, dynamic>{},
     Object? extra,
   }) {
-    if (bundle != null && (params.isNotEmpty || queryParams.isNotEmpty)) {
-      throw Exception("when using bundle don't use 'params' or 'queryParams'");
-    }
-
-    Map<String, String> mParams = {};
-    params.forEach((key, value) {
-      if (value?.toString().isNotEmpty == true) mParams[key] = value.toString();
-    });
-    Map<String, String> mQueryParams = {};
-    queryParams.forEach((key, value) {
-      if (value?.toString().isNotEmpty == true) mQueryParams[key] = value.toString();
-    });
-
-    // generate param & query via bundle data
-    if (bundle != null) {
-      var bundleData = bundle.getData();
-      for (var key in bundleData.keys) {
-        if (!routeName.contains("/:$key")) {
-          continue;
-        }
-        mParams[key] = bundleData[key]!;
-        bundleData.remove(key);
-      }
-      mQueryParams.addAll(bundleData);
-    }
-
-    final route = GoRouter.of(context).namedLocation(
-      routeName,
-      params: mParams,
-      queryParams: mQueryParams,
+    GoRouter.of(context).replace(
+      namedLocation(context, routeName, bundle: bundle, params: params, queryParams: queryParams),
+      extra: extra,
     );
-    GoRouter.of(context).replace(route, extra: extra);
+  }
+
+  static void updateContent(
+    BuildContext context,
+    String routeName, {
+    Bundle? bundle,
+    Map<String, dynamic> params = const <String, dynamic>{},
+    Map<String, dynamic> queryParams = const <String, dynamic>{},
+    Object? extra,
+  }) {
+    GoRouter.of(context).go(
+      namedLocation(context, routeName, bundle: bundle, params: params, queryParams: queryParams),
+      extra: extra,
+    );
   }
 
   static void onBackPressed<T extends Object>(BuildContext context, [Object? result]) {

@@ -73,7 +73,11 @@ class MainPage extends Screen {
   static final MoldRoute route = MoldRoute(name: routeName, path: "/:company/main", builder: (_) => MainPage());
 
   static void open(BuildContext context, String companyId) {
-    Mold.openContent(context, routeName, params: {"company": companyId});
+    Mold.replaceContent(context, routeName, params: {"company": companyId});
+  }
+
+  void updateContent(String companyId) {
+    Mold.updateContent(requiredContext(), routeName, params: {"company": companyId});
   }
 
   @override
@@ -91,6 +95,12 @@ class MainPage extends Screen {
               } else {
                 MoldApplicationWidget.of(context).changeLanguage("ru");
               }
+            },
+          ),
+          MyText(
+            "Update Company",
+            onTap: () {
+              updateContent(Random.secure().nextInt(100).toString());
             },
           ),
         ]),
