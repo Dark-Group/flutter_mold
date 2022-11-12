@@ -50,11 +50,16 @@ class Mold {
     });
     var goRouter = GoRouter(
       initialLocation: "/",
-      routes: dataRoutes.values.map((e) {
+      routes: dataRoutes.values.mapByIndex((index, e) {
         return GoRoute(
           name: e.name,
           path: e.path,
-          builder: (context, screenState) => Window(e.builder.call(context), screenState),
+          pageBuilder: (context, screenState) {
+            return MaterialPage<void>(
+              key: ValueKey<String>("${screenState.location}:$index"),
+              child: Window(e.builder.call(context), screenState),
+            );
+          },
         );
       }).toList(),
       observers: navigatorObservers,
