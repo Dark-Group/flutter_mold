@@ -24,11 +24,46 @@ class IntroPage extends Screen {
 
   @override
   Widget onCreateWidget(BuildContext context) {
+    final info = getScreenInformation();
     var appLang = MoldApplicationWidget.of(context).appLang;
     return Scaffold(
       body: Center(
         child: MyTable.vertical([
-          Text("Intro Page\n\n${appLang.getLangCode()}"),
+          Text("Intro Default Page\n\n${appLang.getLangCode()}\n\n${info?.refinedSize}"),
+          MyText(
+            "open first page",
+            onTap: () => FirstPage.open(requiredContext()),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  @override
+  Widget? onCreateDesktopWidget(BuildContext context) {
+    final info = getScreenInformation();
+    var appLang = MoldApplicationWidget.of(context).appLang;
+    return Scaffold(
+      body: Center(
+        child: MyTable.vertical([
+          Text("Intro Desktop Page\n\n${appLang.getLangCode()}\n\n${info?.refinedSize}"),
+          MyText(
+            "open first page",
+            onTap: () => FirstPage.open(requiredContext()),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  @override
+  Widget? onCreateTabletWidget(BuildContext context) {
+    final info = getScreenInformation();
+    var appLang = MoldApplicationWidget.of(context).appLang;
+    return Scaffold(
+      body: Center(
+        child: MyTable.vertical([
+          Text("Intro Table Page\n\n${appLang.getLangCode()}\n\n${info?.refinedSize}"),
           MyText(
             "open first page",
             onTap: () => FirstPage.open(requiredContext()),

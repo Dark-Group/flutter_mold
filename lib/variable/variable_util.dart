@@ -1,4 +1,4 @@
-import 'package:flutter_mold/common/list_extension.dart';
+import 'package:flutter_mold/common/extensions.dart';
 import 'package:flutter_mold/variable/error_result.dart';
 import 'package:flutter_mold/variable/variable.dart';
 
@@ -8,14 +8,14 @@ class VariableUtil {
   }
 
   static bool mandatory(List<Variable?> items) {
-    return items.filterNotNull().containsWhere((e) => e!.mandatory());
+    return items.filterNotNull().containsWhere((e) => e.mandatory());
   }
 
   static bool modified(List<Variable?> items) {
-    return items.filterNotNull().containsWhere((e) => e!.modified());
+    return items.filterNotNull().containsWhere((e) => e.modified());
   }
 
   static ErrorResult getError(List<Variable?> items) {
-    return items.filterNotNull().map((e) => e!.getError()).findWhere((e) => e.isError()) ?? ErrorResult.NONE;
+    return items.filterNotNull().map((e) => e.getError()).findWhere((e) => e.isError()) ?? ErrorResult.NONE;
   }
 }

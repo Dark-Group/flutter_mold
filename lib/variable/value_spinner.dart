@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_mold/common/extensions.dart';
-import 'package:flutter_mold/common/list_extension.dart';
 import 'package:flutter_mold/localization/app_lang.dart';
 import 'package:flutter_mold/variable/error_result.dart';
 import 'package:flutter_mold/variable/text_value.dart';

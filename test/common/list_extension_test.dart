@@ -1,4 +1,4 @@
-import 'package:flutter_mold/common/list_extension.dart';
+import 'package:flutter_mold/common/extensions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

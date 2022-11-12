@@ -1,7 +1,7 @@
 import 'dart:async' as async;
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_mold/common/list_extension.dart';
+import 'package:flutter_mold/common/extensions.dart';
 import 'package:flutter_mold/variable/error_result.dart';
 import 'package:flutter_mold/variable/value_array.dart';
 import 'package:flutter_mold/variable/value_form.dart';
@@ -19,7 +19,7 @@ abstract class ValueModule extends ChangeNotifier implements VariableLike {
 
   List<ValueForm> getModuleForms() => forms.getItems().filterWhere((e) => e.isEnable()).toList();
 
-  bool hasValue() => this.getModuleForms().containsWhere((e) => e.hasValue());
+  bool hasValue() => getModuleForms().containsWhere((e) => e.hasValue());
 
   @override
   void readyToChange() => forms.readyToChange();
@@ -36,7 +36,7 @@ abstract class ValueModule extends ChangeNotifier implements VariableLike {
   @override
   void notifyListeners() {
     _debounce?.cancel();
-    _debounce = async.Timer(Duration(milliseconds: 500), () {
+    _debounce = async.Timer(const Duration(milliseconds: 500), () {
       super.notifyListeners();
       _debounce = null;
     });

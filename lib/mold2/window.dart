@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_mold/common/setter.dart';
 import 'package:flutter_mold/flutter_mold.dart';
 import 'package:go_router/go_router.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 class Window extends StatelessWidget {
   final Screen screen;
@@ -22,6 +24,8 @@ class _WindowState extends MoldStatefulWidget {
     window.screen._onAttachWindowState(this);
   }
 
+  final Setter<ScreenSizing> screenSetup = Setter();
+
   @override
   void onCreate() {
     super.onCreate();
@@ -41,8 +45,57 @@ class _WindowState extends MoldStatefulWidget {
 
   @override
   Widget onCreateWidget(BuildContext context) {
-    return window.screen.onCreateWidget(windowContext);
+    return ResponsiveBuilder(
+      builder: (context, sizing) {
+        screenSetup.value = ScreenSizing(sizing);
+        Widget? widget;
+
+        final isDesktop = sizing.isDesktop;
+        final isTablet = sizing.isTablet;
+        final isMobile = sizing.isMobile;
+
+        if (isDesktop) {
+          widget = window.screen.onCreateDesktopWidget(windowContext);
+        }
+
+        if ((widget == null && isDesktop) || isTablet) {
+          widget = window.screen.onCreateTabletWidget(windowContext);
+        }
+
+        if ((widget == null && (isDesktop || isTablet)) || isMobile) {
+          widget = window.screen.onCreateMobileWidget(windowContext);
+        }
+
+        return widget ??= window.screen.onCreateWidget(windowContext);
+      },
+    );
   }
+}
+
+class ScreenSizing {
+  final SizingInformation sizingInformation;
+
+  ScreenSizing(this.sizingInformation);
+
+  bool get isMobile => sizingInformation.isMobile;
+
+  bool get isTablet => sizingInformation.isTablet;
+
+  bool get isDesktop => sizingInformation.isDesktop;
+
+  bool get isWatch => sizingInformation.isWatch;
+
+  // Refined
+
+  RefinedSize get refinedSize => sizingInformation.refinedSize;
+
+  bool get isExtraLarge => sizingInformation.isExtraLarge;
+
+  bool get isLarge => sizingInformation.isLarge;
+
+  bool get isNormal => sizingInformation.isNormal;
+
+  bool get isSmall => sizingInformation.isSmall;
 }
 
 abstract class Screen {
@@ -85,6 +138,8 @@ abstract class Screen {
 
   BuildContext requiredContext() => getContext()!;
 
+  ScreenSizing? getScreenInformation() => _windowState?.screenSetup.value;
+
   void onCreate() {}
 
   void onChangeAppLifecycleState(AppLifecycleState state) {}
@@ -94,6 +149,18 @@ abstract class Screen {
   void onDestroy() {}
 
   Widget onCreateWidget(BuildContext context);
+
+  Widget? onCreateDesktopWidget(BuildContext context) {
+    return null;
+  }
+
+  Widget? onCreateTabletWidget(BuildContext context) {
+    return null;
+  }
+
+  Widget? onCreateMobileWidget(BuildContext context) {
+    return null;
+  }
 }
 
 // ignore: must_be_immutable
