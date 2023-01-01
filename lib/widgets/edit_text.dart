@@ -122,21 +122,21 @@ class GEditText extends MyWidget {
 
     return InputDecoration(
       border: OutlineInputBorder(
-        borderSide: const BorderSide(color: Colors.black54, width: 0.5),
+        borderSide: const BorderSide(color: Colors.black54, width: 1),
         borderRadius: BorderRadius.circular(4.0),
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Colors.black54, width: 0.5),
+        borderSide: const BorderSide(color: Colors.black54, width: 1),
         borderRadius: BorderRadius.circular(4.0),
       ),
       disabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Colors.black54, width: 0.5),
+        borderSide: const BorderSide(color: Colors.black54, width: 1),
         borderRadius: BorderRadius.circular(4.0),
       ),
       hintText: block.hintText,
       hintStyle: block.hintStyle,
       isDense: true,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      contentPadding: const EdgeInsets.all(9),
       prefixIcon: block.prefixIcon,
       suffixIcon: suffixIcon,
       enabled: enable ?? true,
