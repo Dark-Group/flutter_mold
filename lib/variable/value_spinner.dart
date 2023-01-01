@@ -70,7 +70,8 @@ class ValueSpinner extends ChangeNotifier implements TextValue {
     SpinnerOption? value,
     bool mandatory = false,
     bool enable = true,
-  })  : _options = values.map((e) => e).toList(),
+  })
+      : _options = values.map((e) => e).toList(),
         _mandatory = mandatory,
         _enable = enable == true,
         _value = value ?? values[0] {
@@ -87,11 +88,13 @@ class ValueSpinner extends ChangeNotifier implements TextValue {
     notifyListeners();
   }
 
-  void setOptions(List<SpinnerOption> options) {
+  void setOptions(List<SpinnerOption> options, {SpinnerOption? value}) {
     if (options.isEmpty) throw Exception("ValueSpinner: isEmpty");
     _options.clear();
-    _options.addAll(options.map((e) => e).toList());
-    setValue(options.firstWhereOrNull((e) => e.code == getValue().code) ?? options.first);
+    _options.addAll(options);
+
+    final newValue = value ?? options.firstWhereOrNull((e) => e.code == getValue().code);
+    setValue(newValue ?? options.first);
   }
 
   int getPosition() => _options.indexOf(_value);

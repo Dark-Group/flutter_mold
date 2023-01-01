@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_mold/common/extensions.dart';
 import 'package:flutter_mold/variable/error_result.dart';
 import 'package:flutter_mold/variable/variable.dart';
@@ -16,6 +17,15 @@ class VariableUtil {
   }
 
   static ErrorResult getError(List<Variable?> items) {
-    return items.filterNotNull().map((e) => e.getError()).findWhere((e) => e.isError()) ?? ErrorResult.NONE;
+    return items.filterNotNull().map((e) => e.getError()).findWhere((e) => e.isError()) ??
+        ErrorResult.NONE;
+  }
+
+  static void addListener(List<ChangeNotifier?> items, VoidCallback callback) {
+    items.filterNotNull().forEach((e) => e.addListener(callback));
+  }
+
+  static void removeListener(List<ChangeNotifier?> items, VoidCallback callback) {
+    items.filterNotNull().forEach((e) => e.addListener(callback));
   }
 }
