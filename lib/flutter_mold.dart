@@ -29,6 +29,8 @@ export 'variable/quantity.dart';
 export 'variable/text_value.dart';
 export 'variable/value_array.dart';
 export 'variable/value_bool.dart';
+export 'variable/value_double.dart';
+export 'variable/value_spinner.dart';
 export 'variable/value_string.dart';
 export 'variable/variable.dart';
 export 'variable/variable_like.dart';

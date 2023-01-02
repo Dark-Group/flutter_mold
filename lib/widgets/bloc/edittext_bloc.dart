@@ -71,7 +71,8 @@ class GEditTextBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool get enableObscure => this.keyboardType == TextInputType.visiblePassword && (_enableObscure ?? false);
+  bool get enableObscure =>
+      this.keyboardType == TextInputType.visiblePassword && (_enableObscure ?? false);
 
   void switchObscure() {
     enableObscure = !enableObscure;
@@ -221,6 +222,18 @@ class GEditTextBloc extends ChangeNotifier {
   }
 
   TextEditingController? get controller => _controller;
+
+  //------------------------------------------------------------------------------------------------
+  // on_change
+  //------------------------------------------------------------------------------------------------
+  ValueChanged<String>? _onChange;
+
+  set onChange(ValueChanged<String>? newValue) {
+    _onChange = newValue;
+    notifyListeners();
+  }
+
+  ValueChanged<String>? get onChange => _onChange;
 
   //------------------------------------------------------------------------------------------------
   // Padding
