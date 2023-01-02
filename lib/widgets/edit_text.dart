@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mold/widgets/bloc/edittext_bloc.dart';
 import 'package:flutter_mold/widgets/widget.dart';
 import 'package:provider/provider.dart';
 
 class GEditText extends MyWidget {
-  final GEditTextBloc block = new GEditTextBloc();
+  final GEditTextBloc block = GEditTextBloc();
   final bool? enable;
   final Color? fillColor;
 
@@ -28,6 +27,7 @@ class GEditText extends MyWidget {
     Widget? suffixIcon,
     FormFieldValidator<String>? validator,
     TextEditingController? controller,
+    ValueChanged<String>? onChange,
     EdgeInsetsGeometry? padding,
     Alignment? alignment,
     int? flex,
@@ -52,6 +52,7 @@ class GEditText extends MyWidget {
     block.suffixIcon = suffixIcon;
     block.validator = validator;
     block.controller = controller;
+    block.onChange = onChange;
     block.padding = padding;
     block.alignment = alignment;
     block.flex = flex;
@@ -95,6 +96,7 @@ class GEditText extends MyWidget {
     var decorator = block.decoration ?? getDecorator(bloc);
 
     return TextFormField(
+      initialValue: block.text,
       controller: block.controller,
       validator: block.validator,
       style: block.style,
@@ -105,6 +107,7 @@ class GEditText extends MyWidget {
       minLines: block.minLines,
       maxLength: block.maxLength,
       decoration: decorator,
+      onChanged: block.onChange,
     );
   }
 
