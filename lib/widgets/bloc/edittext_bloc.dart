@@ -35,7 +35,7 @@ class GEditTextBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  String get text => this._text ?? "";
+  String? get text => this._text;
 
   //------------------------------------------------------------------------------------------------
   // Text style

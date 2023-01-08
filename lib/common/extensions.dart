@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:ui';
 
 import 'package:flutter_mold/common/util.dart';
+import 'package:intl/intl.dart';
 import 'package:rxdart/subjects.dart';
 
 extension ExtendedBehaviorSubject<T> on BehaviorSubject<T> {
@@ -34,14 +35,23 @@ extension ByteToTextSize on int {
 }
 
 extension Iterables<E> on Iterable<E> {
-  Map<K, List<E>> groupBy<K>(K Function(E) keyFunction) => fold(<K, List<E>>{},
-      (Map<K, List<E>> map, E element) => map..putIfAbsent(keyFunction(element), () => <E>[]).add(element));
+  Map<K, List<E>> groupBy<K>(K Function(E) keyFunction) => fold(
+      <K, List<E>>{},
+      (Map<K, List<E>> map, E element) =>
+          map..putIfAbsent(keyFunction(element), () => <E>[]).add(element));
 }
 
 extension BooleanLetExtention on bool {
   bool let(fun(bool it)) {
     fun(this);
     return this;
+  }
+}
+
+extension NumExtension on num {
+  String toMoneyFormat() {
+    final oCcy = NumberFormat("#,##0.00", "en_US");
+    return oCcy.format(this);
   }
 }
 
@@ -172,7 +182,6 @@ extension ListExtensions<T> on Iterable<T> {
   }
 }
 
-
 extension MyIterable<T, R> on Iterable<T> {
   void checkUniqueness(R Function(T element) onMap) {
     Set<R> keys = new HashSet();
@@ -192,7 +201,6 @@ extension MyIterable<T, R> on Iterable<T> {
     }
     return null;
   }
-
 
   bool hasValueInstance(T value) {
     return firstWhere((e) => e == value) != null;
